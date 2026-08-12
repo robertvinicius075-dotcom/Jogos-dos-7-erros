@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo dos 7 Erros - Projeto Educacional SENAC</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        senac: {
+                            blue: '#004587',     // Azul Institucional Senac
+                            navy: '#002B54',     // Azul Escuro Profundo
+                            orange: '#F37021',   // Laranja Senac
+                            orangeHover: '#d95d12',
+                            lightBg: '#F8FAFC',
+                            cardBg: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+        .canvas-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        .color-btn.active {
+            box-shadow: 0 0 0 3px #004587, 0 0 0 5px white;
+            transform: scale(1.12);
+        }
+        .tool-btn.active {
+            background-color: #004587;
+            color: white;
+        }
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col bg-slate-50 antialiased">
+
+    <!-- Header Institucional SENAC -->
+    <header class="bg-senac-navy text-white sticky top-0 z-40 shadow-md border-b-4 border-senac-orange">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo e Título do Projeto -->
+            <div class="flex items-center space-x-4">
+                <!-- Logo Estilo Senac SVG -->
+                <div class="bg-white px-3 py-1.5 rounded-md flex items-center justify-center shadow-sm">
+                    <svg class="h-8 w-auto" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Design do Logo SENAC -->
+                        <path d="M12 28C16 28 19 25 19 21C19 16 12 15 12 12C12 10 14 9 17 9C19.5 9 22 10 24 11.5L26 7.5C23.5 5.5 20.5 4.5 17 4.5C10.5 4.5 6 8 6 12.5C6 17.5 13 18.5 13 21.5C13 23.5 10.5 24.5 8 24.5C5 24.5 2.5 23 0.5 21L-1.5 25C1 27.5 4.5 29 8.5 29C9.7 29 10.9 28.7 12 28Z" fill="#F37021" transform="translate(5, 4)"/>
+                        <text x="32" y="27" font-family="'Inter', sans-serif" font-weight="900" font-size="24" fill="#004587" letter-spacing="-0.5">Senac</text>
+                    </svg>
+                </div>
+                <div class="hidden sm:block border-l border-slate-600 h-8"></div>
+                <span class="hidden sm:inline-block font-semibold text-slate-200 text-sm tracking-wide">
+                    Plataforma Educacional Interativa
+                </span>
+            </div>
+
+            <!-- Menu de Navegação -->
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-sm">
+                <a href="#jogo" class="text-white hover:text-senac-orange transition">Jogo Interativo</a>
+                <a href="#como-jogar" class="text-slate-300 hover:text-white transition">Como Jogar</a>
+                <a href="#sobre-projeto" class="text-slate-300 hover:text-white transition">Sobre o Projeto</a>
+            </nav>
+
+            <!-- Botão de Ação / Projeto -->
+            <div class="flex items-center space-x-3">
+                <a href="#sobre-projeto" class="bg-senac-orange hover:bg-senac-orangeHover text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-150 shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Projeto Acadêmico</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sub-hero Banner Institucional -->
+    <section class="bg-gradient-to-r from-senac-navy via-senac-blue to-slate-800 text-white py-8 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-senac-orange mb-2 border border-white/10">
+                    <i class="fa-solid fa-brain"></i> Atividade de Percepção Visual
+                </div>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Jogo dos 7 Erros - Supermercado</h1>
+                <p class="text-slate-300 text-sm md:text-base mt-1 max-w-2xl">
+                    Atividade desenvolvida para exercitar a atenção seletiva, foco nos detalhes e discriminação visual em ambientes operacionais.
+                </p>
+            </div>
+            
+            <!-- Placar de Progresso -->
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 flex items-center gap-4 self-start md:self-auto shadow-inner">
+                <div class="w-12 h-12 rounded-lg bg-senac-orange flex items-center justify-center text-white text-xl shadow">
+                    <i class="fa-solid fa-bullseye"></i>
+                </div>
+                <div>
+                    <span class="text-xs uppercase tracking-wider text-slate-300 font-medium block">Progresso do Desafio</span>
+                    <div class="text-xl font-extrabold text-white flex items-center gap-1">
+                        <span id="error-count" class="text-amber-300 text-2xl font-black">0</span> / 7 <span class="text-xs font-normal text-slate-300 ml-1">Erros marcados</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notificação de Erro Encontrado (Toast) -->
+    <div id="toast-found" class="fixed top-24 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-50 text-sm border border-emerald-400">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span id="toast-text">Excelente! Encontrou um erro!</span>
+    </div>
+
+    <!-- Conteúdo Principal / Área do Jogo -->
+    <main id="jogo" class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+
+        <!-- Moldura Institucional do Jogo -->
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+            
+            <!-- Barra Superior do Container da Imagem -->
+            <div class="bg-slate-100 px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Área de Análise Comparativa</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button id="btn-reset" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition duration-150 flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-rotate-right"></i> Reiniciar Desafio
+                    </button>
+                </div>
+            </div>
+
+            <!-- Imagem e Canvas de Marcação -->
+            <div class="p-4 sm:p-6 bg-slate-900 flex justify-center items-center">
+                <div id="image-wrapper" class="relative w-full max-w-4xl bg-slate-950 rounded-lg overflow-hidden shadow-2xl border border-slate-800">
+                    
+                    <!-- Imagem do Jogo em Alta Definição -->
+                    <img id="game-image" 
+                         src="https://i.im.ge/QMHO1o6/378d4322-bb49-49a1-a53e-e9b1ae5053ca.jpg" 
+                         onerror="this.onerror=null; this.src='uploaded:image.png-0fa6646f-5ee3-4349-8525-6b5adccbd73a';"
+                         alt="Jogo dos 7 Erros Supermercado" 
+                         class="w-full h-auto block select-none pointer-events-none">
+                    
+                    <!-- Canvas Transparente para Desenho -->
+                    <canvas id="drawing-canvas" class="canvas-overlay w-full h-full"></canvas>
+                </div>
+            </div>
+
+            <!-- Painel de Ferramentas de Marcação -->
+            <div class="bg-slate-50 border-t border-slate-200 p-4 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    
+                    <!-- Paleta de Cores -->
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-bold uppercase text-slate-500 tracking-wider">Cores do Marcador:</span>
+                        <div class="flex items-center space-x-2">
+                            <button data-color="#ef4444" title="Vermelho" class="color-btn active w-8 h-8 rounded-full bg-red-500 border-2 border-white shadow-sm transition transform"></button>
+                            <button data-color="#004587" title="Azul Senac" class="color-btn w-8 h-8 rounded-full bg-blue-700 border-2 border-white shadow-sm transition transform"></button>
+                            <button data-color="#10b981" title="Verde" class="color-btn w-8 h-8 rounded-full bg-emerald-500 border-2 border-white shadow-sm transition transform"></button>
+                            <button data-color="#F37021" title="Laranja Senac" class="color-btn w-8 h-8 rounded-full bg-amber-500 border-2 border-white shadow-sm transition transform"></button>
+                            <button data-color="#a855f7" title="Roxo" class="color-btn w-8 h-8 rounded-full bg-purple-500 border-2 border-white shadow-sm transition transform"></button>
+                            <button data-color="#000000" title="Preto" class="color-btn w-8 h-8 rounded-full bg-black border-2 border-white shadow-sm transition transform"></button>
+                        </div>
+                    </div>
+
+                    <!-- Pincel, Marcador e Borracha -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <!-- Espessura -->
+                        <div class="flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
+                            <i class="fa-solid fa-circle text-[10px] text-slate-400"></i>
+                            <input id="brush-size" type="range" min="3" max="25" value="8" class="w-20 accent-senac-blue cursor-pointer">
+                            <i class="fa-solid fa-circle text-base text-slate-600"></i>
+                        </div>
+
+                        <!-- Tipos de Ferramentas -->
+                        <div class="flex bg-white p-1 rounded-lg border border-slate-200 shadow-sm space-x-1">
+                            <button id="tool-pen" class="tool-btn active px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-pen"></i> Pincel
+                            </button>
+                            <button id="tool-highlighter" class="tool-btn px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-highlighter"></i> Marcador
+                            </button>
+                            <button id="tool-eraser" class="tool-btn px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-eraser"></i> Borracha
+                            </button>
+                        </div>
+
+                        <!-- Desfazer e Limpar -->
+                        <div class="flex items-center space-x-1">
+                            <button id="btn-undo" title="Desfazer último traço" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                            <button id="btn-clear-canvas" title="Limpar todo o desenho" class="bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Seção: Lista dos Erros Encontrados -->
+        <section class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-senac-navy flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-senac-orange"></i>
+                        Lista de Erros Identificados
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">
+                        À medida que marca as inconformidades na imagem, a lista será atualizada automaticamente.
+                    </p>
+                </div>
+                <button id="btn-toggle-hints" class="self-start md:self-auto bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-lightbulb text-amber-600"></i> Alternar Pistas de Apoio
+                </button>
+            </div>
+
+            <div id="checklist-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Elementos gerados dinamicamente via JS -->
+            </div>
+        </section>
+
+        <!-- Seção: Como Jogar -->
+        <section id="como-jogar" class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8">
+            <div class="max-w-3xl mb-6">
+                <h2 class="text-xl font-bold text-senac-navy flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-senac-blue"></i>
+                    Instruções de Uso / Como Jogar
+                </h2>
+                <p class="text-sm text-slate-600 mt-1">
+                    Siga o passo a passo metodológico para concluir a atividade interativa com êxito:
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Passo 1 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
+                    <div>
+                        <div class="w-8 h-8 rounded-lg bg-senac-blue text-white font-bold flex items-center justify-center text-sm mb-3">1</div>
+                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Observe a Imagem</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Analise atentamente a imagem da esquerda (referência correta) e compare-a com a imagem da direita.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Passo 2 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
+                    <div>
+                        <div class="w-8 h-8 rounded-lg bg-senac-blue text-white font-bold flex items-center justify-center text-sm mb-3">2</div>
+                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Encontre as Diferenças</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Identifique elementos alterados, ausentes ou fora de lugar no cenário do supermercado.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Passo 3 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
+                    <div>
+                        <div class="w-8 h-8 rounded-lg bg-senac-blue text-white font-bold flex items-center justify-center text-sm mb-3">3</div>
+                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Marque o Erro</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Desenhe ou risque diretamente sobre o local do erro na imagem da direita utilizando o marcador.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Passo 4 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
+                    <div>
+                        <div class="w-8 h-8 rounded-lg bg-senac-orange text-white font-bold flex items-center justify-center text-sm mb-3">4</div>
+                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Conclua o Desafio</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Encontre todos os 7 erros para validar o teste e concluir a atividade pedagógica.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Sobre o Projeto Acadêmico -->
+        <section id="sobre-projeto" class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
+            <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-slate-100 rounded-full opacity-50 pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-4xl">
+                <div class="inline-flex items-center gap-2 bg-senac-blue/10 text-senac-blue px-3 py-1 rounded-full text-xs font-bold mb-3">
+                    <i class="fa-solid fa-book-open"></i> Apresentação do Projeto
+                </div>
+                <h2 class="text-2xl font-bold text-senac-navy mb-4">Sobre o Projeto Educacional</h2>
+                
+                <div class="prose prose-slate max-w-none text-slate-600 text-sm leading-relaxed space-y-4">
+                    <p>
+                        Este objeto de aprendizagem interativo foi desenvolvido como parte de uma atividade acadêmica do <strong>SENAC</strong>, combinando conceitos de gamificação, desenvolvimento web e pedagogia ativa.
+                    </p>
+                    <p>
+                        O objetivo principal desta aplicação é atuar como uma ferramenta lúdico-pedagógica para aprimorar a <strong>atenção concentrada</strong>, a <strong>percepção espacial</strong> e o <strong>foco nos detalhes</strong>. Através do estudo de caso contextualizado em um ambiente de supermercado, o estudante exercita a capacidade de discernir padrões e identificar falhas operacionais e de organização visual.
+                    </p>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
+                    <div class="flex items-center space-x-3">
+                        <div class="text-senac-orange text-lg"><i class="fa-solid fa-eye"></i></div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800">Percepção Visual</h4>
+                            <p class="text-[11px] text-slate-500">Estimulação cognitiva rápida</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-senac-orange text-lg"><i class="fa-solid fa-hand-pointer"></i></div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800">Interatividade Total</h4>
+                            <p class="text-[11px] text-slate-500">Desenho livre em tempo real</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-senac-orange text-lg"><i class="fa-solid fa-award"></i></div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800">Prática Gamificada</h4>
+                            <p class="text-[11px] text-slate-500">Feedback instantâneo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Rodapé Institucional -->
+    <footer class="bg-senac-navy text-white mt-12 border-t-4 border-senac-orange py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-300">
+            <div class="flex items-center space-x-3">
+                <span class="font-extrabold text-white text-lg tracking-wider">Senac</span>
+                <span>|</span>
+                <span>Projeto Educacional Acadêmico</span>
+            </div>
+            <div>
+                © 2026 - Desenvolvido para fins didáticos e demonstrativos.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Vitória -->
+    <div id="victory-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-slate-100 transform transition-all scale-95">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h3 class="text-2xl font-extrabold text-senac-navy mb-2">Desafio Concluído! 🎉</h3>
+            <p class="text-slate-600 mb-6 text-sm leading-relaxed">
+                Parabéns! Identificou com êxito todas as 7 inconformidades na imagem do supermercado.
+            </p>
+            <button id="modal-close" class="w-full bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3 rounded-xl shadow-lg transition">
+                Continuar a Explorar
+            </button>
+        </div>
+    </div>
+
+    <!-- Código Lógico Mantido e Preservado -->
+    <script>
+        // Definição exata dos 7 Erros e as respetivas coordenadas relativas
+        const errorsList = [
+            { id: 1, text: "Placa Superior do teto (Texto e cor alterados)", hint: "Olha para a placa azul suspensa no teto do lado direito.", bbox: { minX: 0.68, maxX: 0.82, minY: 0.08, maxY: 0.25 } },
+            { id: 2, text: "Detergente verde Ypê na prateleira de comida", hint: "Procura um frasco de detergente verde na estante do lado esquerdo.", bbox: { minX: 0.52, maxX: 0.60, minY: 0.38, maxY: 0.48 } },
+            { id: 3, text: "Caixa de cartão no meio do corredor", hint: "Existe uma caixa no chão do corredor do lado direito.", bbox: { minX: 0.70, maxX: 0.82, minY: 0.58, maxY: 0.77 } },
+            { id: 4, text: "Carrinho de compras trocado de posição e cheio", hint: "Compara o carrinho de compras do lado direito com a imagem da esquerda.", bbox: { minX: 0.77, maxX: 0.98, minY: 0.68, maxY: 0.98 } },
+            { id: 5, text: "Falha de garrafas de água na prateleira central", hint: "Olha para as garrafas de água do lado direito.", bbox: { minX: 0.82, maxX: 0.92, minY: 0.52, maxY: 0.62 } },
+            { id: 6, text: "Garrafa de Fanta Laranja sozinha na prateleira", hint: "Analisa a prateleira inferior de bebidas, no canto inferior direito.", bbox: { minX: 0.95, maxX: 0.99, minY: 0.52, maxY: 0.65 } },
+            { id: 7, text: "Painel laranja ao fundo perto do Hortifruti", hint: "Compara a parede do lado esquerdo do letreiro 'HORTIFRUTI'.", bbox: { minX: 0.68, maxX: 0.71, minY: 0.33, maxY: 0.39 } }
+        ];
+
+        // Estado do Jogo
+        let currentColor = '#ef4444';
+        let currentTool = 'pen'; 
+        let brushSize = 8;
+        let isDrawing = false;
+        let strokeHistory = [];
+        let showHints = false;
+        let checkedErrors = new Set();
+
+        // Elementos do DOM
+        const gameImg = document.getElementById('game-image');
+        const canvas = document.getElementById('drawing-canvas');
+        const ctx = canvas.getContext('2d');
+        const colorBtns = document.querySelectorAll('.color-btn');
+        const toolBtns = document.querySelectorAll('.tool-btn');
+        const brushSizeInput = document.getElementById('brush-size');
+        const checklistContainer = document.getElementById('checklist-container');
+        const errorCountSpan = document.getElementById('error-count');
+        const victoryModal = document.getElementById('victory-modal');
+        const toastFound = document.getElementById('toast-found');
+        const toastText = document.getElementById('toast-text');
+
+        // Sincronizar tamanho do Canvas com a Imagem
+        function syncCanvasSize() {
+            const width = gameImg.clientWidth;
+            const height = gameImg.clientHeight;
+
+            if (width === 0 || height === 0) return;
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            if (tempCanvas.width > 0 && tempCanvas.height > 0) {
+                tempCanvas.getContext('2d').drawImage(canvas, 0, 0);
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            if (tempCanvas.width > 0 && tempCanvas.height > 0) {
+                ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, width, height);
+            }
+        }
+
+        gameImg.addEventListener('load', syncCanvasSize);
+        window.addEventListener('resize', syncCanvasSize);
+
+        // Obter coordenadas
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            }
+
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        // Deteção se a linha interseta algum erro
+        function checkErrorDetection(pointX, pointY) {
+            const relX = pointX / canvas.width;
+            const relY = pointY / canvas.height;
+
+            errorsList.forEach(error => {
+                if (!checkedErrors.has(error.id)) {
+                    const b = error.bbox;
+                    if (relX >= b.minX && relX <= b.maxX && relY >= b.minY && relY <= b.maxY) {
+                        checkedErrors.add(error.id);
+                        showToast(`Identificou o Erro ${error.id}!`);
+                        renderChecklist();
+                    }
+                }
+            });
+        }
+
+        function showToast(msg) {
+            toastText.textContent = msg;
+            toastFound.classList.remove('opacity-0');
+            toastFound.classList.add('opacity-100');
+            setTimeout(() => {
+                toastFound.classList.remove('opacity-100');
+                toastFound.classList.add('opacity-0');
+            }, 2500);
+        }
+
+        // Desenhar
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const coords = getCoordinates(e);
+
+            saveState();
+
+            ctx.beginPath();
+            ctx.moveTo(coords.x, coords.y);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            if (currentTool === 'eraser') {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = brushSize * 2;
+            } else if (currentTool === 'highlighter') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = currentColor + '80';
+                ctx.lineWidth = brushSize * 2;
+            } else {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = currentColor;
+                ctx.lineWidth = brushSize;
+            }
+
+            if (currentTool !== 'eraser') {
+                checkErrorDetection(coords.x, coords.y);
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+
+            const coords = getCoordinates(e);
+            ctx.lineTo(coords.x, coords.y);
+            ctx.stroke();
+
+            if (currentTool !== 'eraser') {
+                checkErrorDetection(coords.x, coords.y);
+            }
+        }
+
+        function stopDrawing(e) {
+            if (!isDrawing) return;
+            isDrawing = false;
+            ctx.closePath();
+        }
+
+        function saveState() {
+            if (strokeHistory.length >= 15) {
+                strokeHistory.shift();
+            }
+            strokeHistory.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        }
+
+        // Eventos
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseleave', stopDrawing);
+
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // Seleção de Cores e Ferramentas
+        colorBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                colorBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentColor = btn.getAttribute('data-color');
+                
+                if (currentTool === 'eraser') {
+                    setTool('pen');
+                }
+            });
+        });
+
+        function setTool(tool) {
+            currentTool = tool;
+            toolBtns.forEach(btn => btn.classList.remove('active'));
+            if (tool === 'pen') document.getElementById('tool-pen').classList.add('active');
+            if (tool === 'highlighter') document.getElementById('tool-highlighter').classList.add('active');
+            if (tool === 'eraser') document.getElementById('tool-eraser').classList.add('active');
+        }
+
+        document.getElementById('tool-pen').addEventListener('click', () => setTool('pen'));
+        document.getElementById('tool-highlighter').addEventListener('click', () => setTool('highlighter'));
+        document.getElementById('tool-eraser').addEventListener('click', () => setTool('eraser'));
+
+        brushSizeInput.addEventListener('input', (e) => {
+            brushSize = e.target.value;
+        });
+
+        document.getElementById('btn-undo').addEventListener('click', () => {
+            if (strokeHistory.length > 0) {
+                const previousState = strokeHistory.pop();
+                ctx.putImageData(previousState, 0, 0);
+            }
+        });
+
+        document.getElementById('btn-clear-canvas').addEventListener('click', () => {
+            saveState();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // Atualizar Placar e Lista
+        function renderChecklist() {
+            checklistContainer.innerHTML = '';
+            
+            errorsList.forEach((error) => {
+                const isChecked = checkedErrors.has(error.id);
+                const item = document.createElement('div');
+                item.className = `p-3 rounded-xl border transition cursor-pointer flex items-start gap-3 ${
+                    isChecked ? 'bg-emerald-50/80 border-emerald-300 text-slate-800 font-medium shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                }`;
+
+                item.innerHTML = `
+                    <input type="checkbox" id="err-${error.id}" ${isChecked ? 'checked' : ''} class="mt-0.5 w-4 h-4 text-senac-blue rounded focus:ring-senac-blue cursor-pointer">
+                    <div class="flex-1 text-xs">
+                        <label for="err-${error.id}" class="block cursor-pointer select-none">
+                            <span class="font-bold text-senac-navy">Erro ${error.id}:</span> ${error.text}
+                        </label>
+                        ${showHints ? `<p class="text-[11px] text-amber-700 mt-1 italic"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> ${error.hint}</p>` : ''}
+                    </div>
+                `;
+
+                item.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'INPUT') {
+                        const checkbox = item.querySelector('input');
+                        checkbox.checked = !checkbox.checked;
+                    }
+                    toggleError(error.id);
+                });
+
+                checklistContainer.appendChild(item);
+            });
+
+            errorCountSpan.textContent = checkedErrors.size;
+            errorCountSpan.classList.remove('animate-pop');
+            void errorCountSpan.offsetWidth;
+            errorCountSpan.classList.add('animate-pop');
+
+            if (checkedErrors.size === 7) {
+                setTimeout(() => {
+                    victoryModal.classList.remove('hidden');
+                }, 400);
+            }
+        }
+
+        function toggleError(id) {
+            if (checkedErrors.has(id)) {
+                checkedErrors.delete(id);
+            } else {
+                checkedErrors.add(id);
+            }
+            renderChecklist();
+        }
+
+        document.getElementById('btn-toggle-hints').addEventListener('click', () => {
+            showHints = !showHints;
+            renderChecklist();
+        });
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            checkedErrors.clear();
+            strokeHistory = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            renderChecklist();
+        });
+
+        document.getElementById('modal-close').addEventListener('click', () => {
+            victoryModal.classList.add('hidden');
+        });
+
+        // Inicialização
+        window.addEventListener('load', () => {
+            syncCanvasSize();
+            renderChecklist();
+        });
+    </script>
+</body>
+</html>
+

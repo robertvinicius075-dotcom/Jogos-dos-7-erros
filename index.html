@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo dos 7 Erros - Projeto Educacional SENAC</title>
+    <title>Plataforma Educacional SENAC - Jogos Interativos</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -71,11 +71,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             
             <!-- Logo e Título do Projeto -->
-            <div class="flex items-center space-x-4">
-                <!-- Logo Estilo Senac SVG -->
-                <div class="bg-white px-3 py-1.5 rounded-md flex items-center justify-center shadow-sm">
+            <button onclick="switchTab('menu')" class="flex items-center space-x-4 focus:outline-none group">
+                <div class="bg-white px-3 py-1.5 rounded-md flex items-center justify-center shadow-sm group-hover:bg-slate-50 transition">
                     <svg class="h-8 w-auto" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Design do Logo SENAC -->
                         <path d="M12 28C16 28 19 25 19 21C19 16 12 15 12 12C12 10 14 9 17 9C19.5 9 22 10 24 11.5L26 7.5C23.5 5.5 20.5 4.5 17 4.5C10.5 4.5 6 8 6 12.5C6 17.5 13 18.5 13 21.5C13 23.5 10.5 24.5 8 24.5C5 24.5 2.5 23 0.5 21L-1.5 25C1 27.5 4.5 29 8.5 29C9.7 29 10.9 28.7 12 28Z" fill="#F37021" transform="translate(5, 4)"/>
                         <text x="32" y="27" font-family="'Inter', sans-serif" font-weight="900" font-size="24" fill="#004587" letter-spacing="-0.5">Senac</text>
                     </svg>
@@ -84,18 +82,18 @@
                 <span class="hidden sm:inline-block font-semibold text-slate-200 text-sm tracking-wide">
                     Plataforma Educacional Interativa
                 </span>
-            </div>
+            </button>
 
             <!-- Menu de Navegação -->
-            <nav class="hidden md:flex items-center space-x-8 font-medium text-sm">
-                <a href="#jogo" class="text-white hover:text-senac-orange transition">Jogo Interativo</a>
-                <a href="#como-jogar" class="text-slate-300 hover:text-white transition">Como Jogar</a>
-                <a href="#sobre-projeto" class="text-slate-300 hover:text-white transition">Sobre o Projeto</a>
+            <nav class="flex items-center space-x-2 sm:space-x-6 font-medium text-xs sm:text-sm">
+                <button onclick="switchTab('menu')" id="nav-menu" class="text-white hover:text-senac-orange transition px-2 py-1">Início</button>
+                <button onclick="switchTab('erros')" id="nav-erros" class="text-slate-300 hover:text-white transition px-2 py-1">🎯 7 Erros</button>
+                <button onclick="switchTab('quiz')" id="nav-quiz" class="text-slate-300 hover:text-white transition px-2 py-1">🧠 Quiz Gôndolas</button>
             </nav>
 
             <!-- Botão de Ação / Projeto -->
-            <div class="flex items-center space-x-3">
-                <a href="#sobre-projeto" class="bg-senac-orange hover:bg-senac-orangeHover text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-150 shadow-sm flex items-center gap-2">
+            <div class="hidden md:flex items-center space-x-3">
+                <a href="#sobre-projeto" onclick="switchTab('menu')" class="bg-senac-orange hover:bg-senac-orangeHover text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-150 shadow-sm flex items-center gap-2">
                     <i class="fa-solid fa-graduation-cap"></i>
                     <span>Projeto Acadêmico</span>
                 </a>
@@ -104,151 +102,315 @@
     </header>
 
     <!-- Sub-hero Banner Institucional -->
-    <section class="bg-gradient-to-r from-senac-navy via-senac-blue to-slate-800 text-white py-8 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+    <section class="bg-gradient-to-r from-senac-navy via-senac-blue to-slate-800 text-white py-6 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-senac-orange mb-2 border border-white/10">
-                    <i class="fa-solid fa-brain"></i> Atividade de Percepção Visual
+                    <i class="fa-solid fa-brain"></i> Treinamento Operacional de Supermercados
                 </div>
-                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Jogo dos 7 Erros - Supermercado</h1>
-                <p class="text-slate-300 text-sm md:text-base mt-1 max-w-2xl">
-                    Atividade desenvolvida para exercitar a atenção seletiva, foco nos detalhes e discriminação visual em ambientes operacionais.
+                <h1 id="page-hero-title" class="text-2xl md:text-3xl font-extrabold tracking-tight">Plataforma de Jogos Educacionais</h1>
+                <p id="page-hero-desc" class="text-slate-300 text-sm md:text-base mt-1 max-w-2xl">
+                    Selecione uma das atividades abaixo para exercitar a atenção visual ou testar os conhecimentos sobre reposição de mercadorias.
                 </p>
             </div>
             
-            <!-- Placar de Progresso -->
-            <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 flex items-center gap-4 self-start md:self-auto shadow-inner">
+            <!-- Placar de Progresso (Visível no Jogo dos 7 Erros) -->
+            <div id="erros-progress-badge" class="hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 items-center gap-4 self-start md:self-auto shadow-inner">
                 <div class="w-12 h-12 rounded-lg bg-senac-orange flex items-center justify-center text-white text-xl shadow">
                     <i class="fa-solid fa-bullseye"></i>
                 </div>
                 <div>
-                    <span class="text-xs uppercase tracking-wider text-slate-300 font-medium block">Progresso do Desafio</span>
+                    <span class="text-xs uppercase tracking-wider text-slate-300 font-medium block">Erros Encontrados</span>
                     <div class="text-xl font-extrabold text-white flex items-center gap-1">
-                        <span id="error-count" class="text-amber-300 text-2xl font-black">0</span> / 7 <span class="text-xs font-normal text-slate-300 ml-1">Erros marcados</span>
+                        <span id="error-count" class="text-amber-300 text-2xl font-black">0</span> / 7 <span class="text-xs font-normal text-slate-300 ml-1">no cenário</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Notificação de Erro Encontrado (Toast) -->
+    <!-- Toast de Notificação -->
     <div id="toast-found" class="fixed top-24 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-50 text-sm border border-emerald-400">
         <i class="fa-solid fa-circle-check text-xl"></i>
         <span id="toast-text">Excelente! Encontrou um erro!</span>
     </div>
 
-    <!-- Conteúdo Principal / Área do Jogo -->
-    <main id="jogo" class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+    <!-- Conteúdo Principal Dinâmico -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
 
-        <!-- Moldura Institucional do Jogo -->
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-            
-            <!-- Barra Superior do Container da Imagem -->
-            <div class="bg-slate-100 px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex items-center space-x-2">
-                    <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Área de Análise Comparativa</span>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <button id="btn-reset" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition duration-150 flex items-center gap-2 shadow-sm">
-                        <i class="fa-solid fa-rotate-right"></i> Reiniciar Desafio
-                    </button>
-                </div>
+        <!-- ================= SEÇÃO: MENU PRINCIPAL ================= -->
+        <section id="section-menu" class="space-y-8 py-4">
+            <div class="text-center max-w-2xl mx-auto">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-senac-navy">Escolha o Desafio Educacional</h2>
+                <p class="text-slate-600 text-sm mt-2">
+                    Desenvolva habilidades práticas de organização, reposição e atenção aos detalhes através de nossos jogos interativos.
+                </p>
             </div>
 
-            <!-- Imagem e Canvas de Marcação -->
-            <div class="p-4 sm:p-6 bg-slate-900 flex justify-center items-center">
-                <div id="image-wrapper" class="relative w-full max-w-4xl bg-slate-950 rounded-lg overflow-hidden shadow-2xl border border-slate-800">
-                    
-                    <!-- Imagem do Jogo em Alta Definição -->
-                    <img id="game-image" 
-                         src="https://i.im.ge/QMHO1o6/378d4322-bb49-49a1-a53e-e9b1ae5053ca.jpg" 
-                         onerror="this.onerror=null; this.src='uploaded:image.png-0fa6646f-5ee3-4349-8525-6b5adccbd73a';"
-                         alt="Jogo dos 7 Erros Supermercado" 
-                         class="w-full h-auto block select-none pointer-events-none">
-                    
-                    <!-- Canvas Transparente para Desenho -->
-                    <canvas id="drawing-canvas" class="canvas-overlay w-full h-full"></canvas>
-                </div>
-            </div>
-
-            <!-- Painel de Ferramentas de Marcação -->
-            <div class="bg-slate-50 border-t border-slate-200 p-4 sm:p-6">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    
-                    <!-- Paleta de Cores -->
-                    <div class="flex items-center space-x-3">
-                        <span class="text-xs font-bold uppercase text-slate-500 tracking-wider">Cores do Marcador:</span>
-                        <div class="flex items-center space-x-2">
-                            <button data-color="#ef4444" title="Vermelho" class="color-btn active w-8 h-8 rounded-full bg-red-500 border-2 border-white shadow-sm transition transform"></button>
-                            <button data-color="#004587" title="Azul Senac" class="color-btn w-8 h-8 rounded-full bg-blue-700 border-2 border-white shadow-sm transition transform"></button>
-                            <button data-color="#10b981" title="Verde" class="color-btn w-8 h-8 rounded-full bg-emerald-500 border-2 border-white shadow-sm transition transform"></button>
-                            <button data-color="#F37021" title="Laranja Senac" class="color-btn w-8 h-8 rounded-full bg-amber-500 border-2 border-white shadow-sm transition transform"></button>
-                            <button data-color="#a855f7" title="Roxo" class="color-btn w-8 h-8 rounded-full bg-purple-500 border-2 border-white shadow-sm transition transform"></button>
-                            <button data-color="#000000" title="Preto" class="color-btn w-8 h-8 rounded-full bg-black border-2 border-white shadow-sm transition transform"></button>
+            <!-- Grade dos Dois Jogos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                
+                <!-- Cartão 1: Jogo dos 7 Erros -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 hover:border-senac-orange/60 transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-1">
+                    <div class="p-6 sm:p-8">
+                        <div class="w-16 h-16 bg-amber-100 text-senac-orange rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm group-hover:scale-110 transition-transform">
+                            🎯
                         </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-senac-orange bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Percepção Visual</span>
+                        <h3 class="text-2xl font-bold text-senac-navy mt-3 mb-2">Jogo dos 7 Erros</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                            Examine atentamente o cenário do supermercado, compare as imagens das gôndolas e marque as 7 falhas de organização.
+                        </p>
+                        <ul class="text-xs text-slate-500 space-y-2 mb-6">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Deteção automática por toque ou clique</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Ferramentas completas de marcação e desenho</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Pistas interativas de apoio</li>
+                        </ul>
                     </div>
-
-                    <!-- Pincel, Marcador e Borracha -->
-                    <div class="flex flex-wrap items-center gap-3">
-                        <!-- Espessura -->
-                        <div class="flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
-                            <i class="fa-solid fa-circle text-[10px] text-slate-400"></i>
-                            <input id="brush-size" type="range" min="3" max="25" value="8" class="w-20 accent-senac-blue cursor-pointer">
-                            <i class="fa-solid fa-circle text-base text-slate-600"></i>
-                        </div>
-
-                        <!-- Tipos de Ferramentas -->
-                        <div class="flex bg-white p-1 rounded-lg border border-slate-200 shadow-sm space-x-1">
-                            <button id="tool-pen" class="tool-btn active px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
-                                <i class="fa-solid fa-pen"></i> Pincel
-                            </button>
-                            <button id="tool-highlighter" class="tool-btn px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
-                                <i class="fa-solid fa-highlighter"></i> Marcador
-                            </button>
-                            <button id="tool-eraser" class="tool-btn px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
-                                <i class="fa-solid fa-eraser"></i> Borracha
-                            </button>
-                        </div>
-
-                        <!-- Desfazer e Limpar -->
-                        <div class="flex items-center space-x-1">
-                            <button id="btn-undo" title="Desfazer último traço" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
-                                <i class="fa-solid fa-rotate-left"></i>
-                            </button>
-                            <button id="btn-clear-canvas" title="Limpar todo o desenho" class="bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
+                    <div class="p-6 bg-slate-50 border-t border-slate-100">
+                        <button onclick="switchTab('erros')" class="w-full bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3.5 px-6 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                            <span>Jogar 7 Erros</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
                     </div>
-
                 </div>
-            </div>
 
-        </div>
-
-        <!-- Seção: Lista dos Erros Encontrados -->
-        <section class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
-                <div>
-                    <h2 class="text-xl font-bold text-senac-navy flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-senac-orange"></i>
-                        Lista de Erros Identificados
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-1">
-                        À medida que marca as inconformidades na imagem, a lista será atualizada automaticamente.
-                    </p>
+                <!-- Cartão 2: Quiz das Gôndolas -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 hover:border-senac-blue/60 transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-1">
+                    <div class="p-6 sm:p-8">
+                        <div class="w-16 h-16 bg-blue-100 text-senac-blue rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm group-hover:scale-110 transition-transform">
+                            🧠
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-senac-blue bg-blue-50 px-3 py-1 rounded-full border border-blue-200">Conhecimento Operacional</span>
+                        <h3 class="text-2xl font-bold text-senac-navy mt-3 mb-2">Quiz das Gôndolas</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                            Responda a 8 perguntas objetivas sobre boas práticas no trabalho em supermercados, regras do PEPS, validade e precificação.
+                        </p>
+                        <ul class="text-xs text-slate-500 space-y-2 mb-6">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 8 Questões objetivas e educativas</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Feedback imediato de acerto ou erro</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Relatório final com taxa de aproveitamento</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-slate-50 border-t border-slate-100">
+                        <button onclick="switchTab('quiz')" class="w-full bg-senac-blue hover:bg-senac-navy text-white font-bold py-3.5 px-6 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                            <span>Iniciar Quiz das Gôndolas</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
                 </div>
-                <button id="btn-toggle-hints" class="self-start md:self-auto bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-lightbulb text-amber-600"></i> Alternar Pistas de Apoio
-                </button>
-            </div>
 
-            <div id="checklist-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <!-- Elementos gerados dinamicamente via JS -->
             </div>
         </section>
 
+
+        <!-- ================= SEÇÃO: JOGO DOS 7 ERROS ================= -->
+        <section id="section-erros" class="hidden space-y-8">
+            
+            <!-- Moldura Institucional do Jogo -->
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                
+                <!-- Barra Superior do Container da Imagem -->
+                <div class="bg-slate-100 px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Área de Análise Comparativa</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button id="btn-reset" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition duration-150 flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-rotate-right"></i> Reiniciar Desafio
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Imagem e Canvas de Marcação -->
+                <div class="p-4 sm:p-6 bg-slate-900 flex justify-center items-center">
+                    <div id="image-wrapper" class="relative w-full max-w-4xl bg-slate-950 rounded-lg overflow-hidden shadow-2xl border border-slate-800">
+                        
+                        <!-- Imagem do Jogo em Alta Definição -->
+                        <img id="game-image" 
+                             src="https://i.im.ge/QMHO1o6/378d4322-bb49-49a1-a53e-e9b1ae5053ca.jpg" 
+                             onerror="this.onerror=null; this.src='uploaded:image.png-0fa6646f-5ee3-4349-8525-6b5adccbd73a';"
+                             alt="Jogo dos 7 Erros Supermercado" 
+                             class="w-full h-auto block select-none pointer-events-none">
+                        
+                        <!-- Canvas Transparente para Desenho -->
+                        <canvas id="drawing-canvas" class="canvas-overlay w-full h-full"></canvas>
+                    </div>
+                </div>
+
+                <!-- Painel de Ferramentas de Marcação -->
+                <div class="bg-slate-50 border-t border-slate-200 p-4 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        
+                        <!-- Paleta de Cores -->
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs font-bold uppercase text-slate-500 tracking-wider">Cores do Marcador:</span>
+                            <div class="flex items-center space-x-2">
+                                <button data-color="#ef4444" title="Vermelho" class="color-btn active w-8 h-8 rounded-full bg-red-500 border-2 border-white shadow-sm transition transform"></button>
+                                <button data-color="#004587" title="Azul Senac" class="color-btn w-8 h-8 rounded-full bg-blue-700 border-2 border-white shadow-sm transition transform"></button>
+                                <button data-color="#10b981" title="Verde" class="color-btn w-8 h-8 rounded-full bg-emerald-500 border-2 border-white shadow-sm transition transform"></button>
+                                <button data-color="#F37021" title="Laranja Senac" class="color-btn w-8 h-8 rounded-full bg-amber-500 border-2 border-white shadow-sm transition transform"></button>
+                                <button data-color="#a855f7" title="Roxo" class="color-btn w-8 h-8 rounded-full bg-purple-500 border-2 border-white shadow-sm transition transform"></button>
+                                <button data-color="#000000" title="Preto" class="color-btn w-8 h-8 rounded-full bg-black border-2 border-white shadow-sm transition transform"></button>
+                            </div>
+                        </div>
+
+                        <!-- Pincel, Marcador e Borracha -->
+                        <div class="flex flex-wrap items-center gap-3">
+                            <!-- Espessura -->
+                            <div class="flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
+                                <i class="fa-solid fa-circle text-[10px] text-slate-400"></i>
+                                <input id="brush-size" type="range" min="3" max="25" value="8" class="w-20 accent-senac-blue cursor-pointer">
+                                <i class="fa-solid fa-circle text-base text-slate-600"></i>
+                            </div>
+
+                            <!-- Tipos de Ferramentas -->
+                            <div class="flex bg-white p-1 rounded-lg border border-slate-200 shadow-sm space-x-1">
+                                <button id="tool-pen" class="tool-btn active px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-pen"></i> Pincel
+                                </button>
+                                <button id="tool-highlighter" class="tool-btn px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-highlighter"></i> Marcador
+                                </button>
+                                <button id="tool-eraser" class="tool-btn px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-eraser"></i> Borracha
+                                </button>
+                            </div>
+
+                            <!-- Desfazer e Limpar -->
+                            <div class="flex items-center space-x-1">
+                                <button id="btn-undo" title="Desfazer último traço" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                </button>
+                                <button id="btn-clear-canvas" title="Limpar todo o desenho" class="bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Seção: Lista dos Erros Encontrados -->
+            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-senac-navy flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-senac-orange"></i>
+                            Lista de Erros Identificados
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">
+                            À medida que marca as inconformidades na imagem, a lista será atualizada automaticamente.
+                        </p>
+                    </div>
+                    <button id="btn-toggle-hints" class="self-start md:self-auto bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-lightbulb text-amber-600"></i> Alternar Pistas de Apoio
+                    </button>
+                </div>
+
+                <div id="checklist-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- Elementos gerados dinamicamente via JS -->
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= SEÇÃO: QUIZ DAS GÔNDOLAS ================= -->
+        <section id="section-quiz" class="hidden space-y-8 max-w-4xl mx-auto">
+            
+            <!-- Cartão Principal do Quiz -->
+            <div id="quiz-card-active" class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                
+                <!-- Barra de Cabeçalho do Quiz -->
+                <div class="bg-slate-100 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                    <span id="quiz-step-indicator" class="text-xs font-bold uppercase tracking-wider text-senac-blue bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                        Pergunta 1 de 8
+                    </span>
+                    <span class="text-xs font-semibold text-slate-500">
+                        Aproveitamento: <span id="quiz-live-score" class="font-bold text-senac-orange">0</span> acertos
+                    </span>
+                </div>
+
+                <!-- Barra de Progresso Visual -->
+                <div class="w-full bg-slate-200 h-2">
+                    <div id="quiz-progress-bar" class="bg-senac-orange h-2 transition-all duration-300 w-1/8"></div>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-6">
+                    <!-- Texto da Questão -->
+                    <h3 id="quiz-question-text" class="text-lg sm:text-xl font-bold text-senac-navy leading-snug">
+                        Carregando pergunta...
+                    </h3>
+
+                    <!-- Opções / Alternativas de Resposta -->
+                    <div id="quiz-options-container" class="space-y-3 pt-2">
+                        <!-- Alternativas inseridas via JS -->
+                    </div>
+
+                    <!-- Caixas de Feedback Válido / Inválido -->
+                    <div id="quiz-feedback-box" class="hidden p-4 rounded-xl border text-sm font-semibold flex items-center gap-3">
+                        <span id="quiz-feedback-icon" class="text-xl"></span>
+                        <span id="quiz-feedback-text"></span>
+                    </div>
+
+                    <!-- Ações do Quiz -->
+                    <div class="pt-4 flex justify-end border-t border-slate-100">
+                        <button id="btn-quiz-next" disabled class="bg-slate-300 text-slate-500 font-bold px-6 py-3 rounded-xl transition cursor-not-allowed flex items-center gap-2">
+                            <span>Próxima Pergunta</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Cartão do Placar Final (Escondido inicialmente) -->
+            <div id="quiz-card-result" class="hidden bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden text-center p-8 sm:p-12 space-y-6">
+                
+                <div class="w-24 h-24 rounded-full bg-amber-100 text-senac-orange flex items-center justify-center mx-auto text-5xl shadow-inner">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl sm:text-3xl font-black text-senac-navy">Resultado do Quiz</h3>
+                    <p id="quiz-score-highlight" class="text-lg font-bold text-slate-700 mt-2">
+                        Você acertou 7 de 8 perguntas!
+                    </p>
+                    <div class="inline-block bg-slate-100 border border-slate-200 rounded-lg px-4 py-1.5 mt-2 text-sm font-semibold text-senac-blue" id="quiz-percentage-text">
+                        87,5% de aproveitamento
+                    </div>
+                </div>
+
+                <!-- Mensagem Personalizada -->
+                <div id="quiz-message-card" class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-900 font-bold text-base max-w-lg mx-auto">
+                    🏆 Excelente! Você dominou o assunto!
+                </div>
+
+                <!-- Botões de Ação do Resultado -->
+                <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto">
+                    <button onclick="restartQuiz()" class="w-full sm:w-auto bg-senac-blue hover:bg-senac-navy text-white font-bold py-3 px-5 rounded-xl transition shadow flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Jogar novamente</span>
+                    </button>
+                    <button onclick="switchTab('menu')" class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3 px-5 rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Voltar ao menu</span>
+                    </button>
+                    <button onclick="switchTab('erros')" class="w-full sm:w-auto bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3 px-5 rounded-xl transition shadow flex items-center justify-center gap-2">
+                        🎯 <span>Jogar 7 Erros</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= INSTRUÇÕES E SOBRE O PROJETO ================= -->
         <!-- Seção: Como Jogar -->
         <section id="como-jogar" class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8">
             <div class="max-w-3xl mb-6">
@@ -257,51 +419,47 @@
                     Instruções de Uso / Como Jogar
                 </h2>
                 <p class="text-sm text-slate-600 mt-1">
-                    Siga o passo a passo metodológico para concluir a atividade interativa com êxito:
+                    Metodologia dos desafios disponíveis na plataforma:
                 </p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Passo 1 -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
                     <div>
                         <div class="w-8 h-8 rounded-lg bg-senac-blue text-white font-bold flex items-center justify-center text-sm mb-3">1</div>
-                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Observe a Imagem</h3>
+                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Escolha um Jogo</h3>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Analise atentamente a imagem da esquerda (referência correta) e compare-a com a imagem da direita.
+                            Aceda ao Jogo dos 7 Erros para prática visual ou ao Quiz para testar conceitos teóricos.
                         </p>
                     </div>
                 </div>
 
-                <!-- Passo 2 -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
                     <div>
                         <div class="w-8 h-8 rounded-lg bg-senac-blue text-white font-bold flex items-center justify-center text-sm mb-3">2</div>
-                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Encontre as Diferenças</h3>
+                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Analise as Questões</h3>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Identifique elementos alterados, ausentes ou fora de lugar no cenário do supermercado.
+                            Observe atentamente os detalhes das imagens ou leia com atenção as perguntas de escolha múltipla.
                         </p>
                     </div>
                 </div>
 
-                <!-- Passo 3 -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
                     <div>
                         <div class="w-8 h-8 rounded-lg bg-senac-blue text-white font-bold flex items-center justify-center text-sm mb-3">3</div>
-                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Marque o Erro</h3>
+                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Marque ou Responda</h3>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Desenhe ou risque diretamente sobre o local do erro na imagem da direita utilizando o marcador.
+                            Desenhe na tela para sinalizar erros ou toque numa opção no Quiz para receber feedback imediato.
                         </p>
                     </div>
                 </div>
 
-                <!-- Passo 4 -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
                     <div>
                         <div class="w-8 h-8 rounded-lg bg-senac-orange text-white font-bold flex items-center justify-center text-sm mb-3">4</div>
-                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Conclua o Desafio</h3>
+                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Valide o Aprendizado</h3>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Encontre todos os 7 erros para validar o teste e concluir a atividade pedagógica.
+                            Conclua os desafios e verifique a sua taxa de aproveitamento e tempo de reação.
                         </p>
                     </div>
                 </div>
@@ -323,7 +481,7 @@
                         Este objeto de aprendizagem interativo foi desenvolvido como parte de uma atividade acadêmica do <strong>SENAC</strong>, combinando conceitos de gamificação, desenvolvimento web e pedagogia ativa.
                     </p>
                     <p>
-                        O objetivo principal desta aplicação é atuar como uma ferramenta lúdico-pedagógica para aprimorar a <strong>atenção concentrada</strong>, a <strong>percepção espacial</strong> e o <strong>foco nos detalhes</strong>. Através do estudo de caso contextualizado em um ambiente de supermercado, o estudante exercita a capacidade de discernir padrões e identificar falhas operacionais e de organização visual.
+                        O objetivo principal desta aplicação é atuar como uma ferramenta lúdico-pedagógica para aprimorar a <strong>atenção concentrada</strong>, a <strong>percepção espacial</strong>, a <strong>organização de gôndolas</strong> e as regras operacionais de reposição (como a metodologia PEPS).
                     </p>
                 </div>
 
@@ -336,10 +494,10 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <div class="text-senac-orange text-lg"><i class="fa-solid fa-hand-pointer"></i></div>
+                        <div class="text-senac-orange text-lg"><i class="fa-solid fa-boxes-packing"></i></div>
                         <div>
-                            <h4 class="text-xs font-bold text-slate-800">Interatividade Total</h4>
-                            <p class="text-[11px] text-slate-500">Desenho livre em tempo real</p>
+                            <h4 class="text-xs font-bold text-slate-800">Técnicas de Gôndola</h4>
+                            <p class="text-[11px] text-slate-500">Regras de PEPS e Validade</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-3">
@@ -369,7 +527,7 @@
         </div>
     </footer>
 
-    <!-- Modal de Vitória -->
+    <!-- Modal de Vitória (7 Erros) -->
     <div id="victory-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-slate-100 transform transition-all scale-95">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner">
@@ -379,15 +537,306 @@
             <p class="text-slate-600 mb-6 text-sm leading-relaxed">
                 Parabéns! Identificou com êxito todas as 7 inconformidades na imagem do supermercado.
             </p>
-            <button id="modal-close" class="w-full bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3 rounded-xl shadow-lg transition">
-                Continuar a Explorar
-            </button>
+            <div class="flex flex-col gap-2">
+                <button id="modal-close" class="w-full bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3 rounded-xl shadow transition">
+                    Continuar a Explorar
+                </button>
+                <button onclick="switchTab('quiz'); document.getElementById('victory-modal').classList.add('hidden');" class="w-full bg-senac-blue hover:bg-senac-navy text-white font-bold py-3 rounded-xl transition">
+                    Ir para o Quiz das Gôndolas
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Código Lógico Mantido e Preservado -->
+
+    <!-- ================= SISTEMA E LÓGICA JAVASCRIPT ================= -->
     <script>
-        // Definição exata dos 7 Erros e as respetivas coordenadas relativas
+        // -------------------------------------------------------------
+        // NAVEGAÇÃO ENTRE NAVEGADOR / ABAS
+        // -------------------------------------------------------------
+        function switchTab(tab) {
+            const secMenu = document.getElementById('section-menu');
+            const secErros = document.getElementById('section-erros');
+            const secQuiz = document.getElementById('section-quiz');
+            const errosBadge = document.getElementById('erros-progress-badge');
+
+            const navMenu = document.getElementById('nav-menu');
+            const navErros = document.getElementById('nav-erros');
+            const navQuiz = document.getElementById('nav-quiz');
+
+            const heroTitle = document.getElementById('page-hero-title');
+            const heroDesc = document.getElementById('page-hero-desc');
+
+            // Reset de visibilidade
+            secMenu.classList.add('hidden');
+            secErros.classList.add('hidden');
+            secQuiz.classList.add('hidden');
+            errosBadge.classList.add('hidden');
+            errosBadge.classList.remove('flex');
+
+            navMenu.className = "text-slate-300 hover:text-white transition px-2 py-1";
+            navErros.className = "text-slate-300 hover:text-white transition px-2 py-1";
+            navQuiz.className = "text-slate-300 hover:text-white transition px-2 py-1";
+
+            if (tab === 'menu') {
+                secMenu.classList.remove('hidden');
+                navMenu.className = "text-white font-bold text-senac-orange border-b-2 border-senac-orange px-2 py-1";
+                heroTitle.textContent = "Plataforma de Jogos Educacionais";
+                heroDesc.textContent = "Selecione uma das atividades abaixo para exercitar a atenção visual ou testar os conhecimentos sobre reposição de mercadorias.";
+            } else if (tab === 'erros') {
+                secErros.classList.remove('hidden');
+                errosBadge.classList.remove('hidden');
+                errosBadge.classList.add('flex');
+                navErros.className = "text-white font-bold text-senac-orange border-b-2 border-senac-orange px-2 py-1";
+                heroTitle.textContent = "Jogo dos 7 Erros - Supermercado";
+                heroDesc.textContent = "Atividade desenvolvida para exercitar a atenção seletiva, foco nos detalhes e discriminação visual em ambientes operacionais.";
+                setTimeout(syncCanvasSize, 100);
+            } else if (tab === 'quiz') {
+                secQuiz.classList.remove('hidden');
+                navQuiz.className = "text-white font-bold text-senac-orange border-b-2 border-senac-orange px-2 py-1";
+                heroTitle.textContent = "Quiz das Gôndolas";
+                heroDesc.textContent = "Teste seus conhecimentos operacionais sobre gôndolas, método PEPS, precificação e reposição de produtos.";
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+
+        // -------------------------------------------------------------
+        // DADOS E LÓGICA DO QUIZ DAS GÔNDOLAS (EXATAMENTE 8 PERGUNTAS)
+        // -------------------------------------------------------------
+        const quizData = [
+            {
+                question: "1. Qual é uma das principais funções de uma gôndola bem organizada?",
+                options: [
+                    "A) Esconder os produtos",
+                    "B) Facilitar a visualização e o acesso aos produtos",
+                    "C) Diminuir o espaço disponível",
+                    "D) Misturar produtos diferentes"
+                ],
+                correct: 1 // B
+            },
+            {
+                question: "2. O que significa PEPS (Primeiro que Entra, Primeiro que Sai)?",
+                options: [
+                    "A) Os produtos mais caros devem ser vendidos primeiro",
+                    "B) Os produtos que chegaram primeiro devem ser vendidos primeiro",
+                    "C) Os produtos maiores devem ficar na frente",
+                    "D) Os produtos promocionais devem ficar no fundo"
+                ],
+                correct: 1 // B
+            },
+            {
+                question: "3. Por que é importante verificar a validade dos produtos nas gôndolas?",
+                options: [
+                    "A) Para deixar a embalagem mais bonita",
+                    "B) Para evitar a venda de produtos vencidos",
+                    "C) Para aumentar o preço",
+                    "D) Para ocupar mais espaço"
+                ],
+                correct: 1 // B
+            },
+            {
+                question: "4. Onde os produtos devem ficar para facilitar a compra pelo cliente?",
+                options: [
+                    "A) Em locais de difícil acesso",
+                    "B) Em locais visíveis e acessíveis",
+                    "C) Atrás de outros produtos",
+                    "D) No estoque"
+                ],
+                correct: 1 // B
+            },
+            {
+                question: "5. O que deve ser feito quando um produto está faltando na gôndola?",
+                options: [
+                    "A) Ignorar",
+                    "B) Repor o produto quando houver estoque disponível",
+                    "C) Retirar todos os produtos da seção",
+                    "D) Colocar outro produto no lugar sem identificação"
+                ],
+                correct: 1 // B
+            },
+            {
+                question: "6. Por que os produtos devem estar com as etiquetas de preço corretas?",
+                options: [
+                    "A) Para facilitar a compra e informar corretamente o cliente",
+                    "B) Para ocupar espaço",
+                    "C) Para esconder os produtos",
+                    "D) Para dificultar a escolha"
+                ],
+                correct: 0 // A
+            },
+            {
+                question: "7. Qual atitude ajuda a manter uma gôndola organizada?",
+                options: [
+                    "A) Deixar produtos espalhados",
+                    "B) Manter os produtos alinhados e em seus respectivos lugares",
+                    "C) Misturar categorias",
+                    "D) Colocar produtos no chão"
+                ],
+                correct: 1 // B
+            },
+            {
+                question: "8. Ao encontrar uma embalagem danificada na gôndola, o que deve ser feito?",
+                options: [
+                    "A) Deixar no mesmo lugar",
+                    "B) Colocar na frente para vender primeiro",
+                    "C) Retirar da exposição e comunicar o responsável",
+                    "D) Esconder atrás de outro produto"
+                ],
+                correct: 2 // C
+            }
+        ];
+
+        let quizCurrentIndex = 0;
+        let quizScore = 0;
+        let quizAnswered = false;
+
+        function loadQuizQuestion() {
+            quizAnswered = false;
+            const currentQ = quizData[quizCurrentIndex];
+
+            // Atualizar contadores do topo
+            document.getElementById('quiz-step-indicator').textContent = `Pergunta ${quizCurrentIndex + 1} de ${quizData.length}`;
+            document.getElementById('quiz-live-score').textContent = quizScore;
+            
+            // Atualizar barra de progresso
+            const progressPercent = ((quizCurrentIndex + 1) / quizData.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+
+            // Definir pergunta
+            document.getElementById('quiz-question-text').textContent = currentQ.question;
+
+            // Esconder feedback e desabilitar botão Próximo
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            feedbackBox.className = "hidden p-4 rounded-xl border text-sm font-semibold flex items-center gap-3";
+            
+            const btnNext = document.getElementById('btn-quiz-next');
+            btnNext.disabled = true;
+            btnNext.className = "bg-slate-200 text-slate-400 font-bold px-6 py-3 rounded-xl transition cursor-not-allowed flex items-center gap-2";
+
+            // Renderizar Opções
+            const container = document.getElementById('quiz-options-container');
+            container.innerHTML = '';
+
+            currentQ.options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 hover:border-senac-blue/50 text-slate-700 font-semibold text-sm sm:text-base transition duration-150 flex items-center justify-between shadow-sm cursor-pointer";
+                btn.innerHTML = `
+                    <span>${optText}</span>
+                    <i class="quiz-opt-icon fa-regular fa-circle text-slate-300 text-lg"></i>
+                `;
+
+                btn.onclick = () => selectQuizAnswer(optIdx);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectQuizAnswer(selectedIdx) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+
+            const currentQ = quizData[quizCurrentIndex];
+            const isCorrect = (selectedIdx === currentQ.correct);
+            const optButtons = document.querySelectorAll('.quiz-opt-btn');
+
+            if (isCorrect) {
+                quizScore++;
+                document.getElementById('quiz-live-score').textContent = quizScore;
+            }
+
+            // Desabilitar todas as alternativas e destacar respostas
+            optButtons.forEach((btn, idx) => {
+                btn.classList.remove('hover:bg-slate-50', 'hover:border-senac-blue/50', 'cursor-pointer');
+                btn.classList.add('cursor-not-allowed');
+
+                const icon = btn.querySelector('.quiz-opt-icon');
+
+                if (idx === currentQ.correct) {
+                    btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold text-sm sm:text-base transition flex items-center justify-between shadow-sm";
+                    icon.className = "fa-solid fa-circle-check text-emerald-600 text-xl";
+                } else if (idx === selectedIdx && !isCorrect) {
+                    btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-900 font-bold text-sm sm:text-base transition flex items-center justify-between shadow-sm";
+                    icon.className = "fa-solid fa-circle-xmark text-rose-600 text-xl";
+                } else {
+                    btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-xl border-2 border-slate-100 bg-slate-50 text-slate-400 font-medium text-sm sm:text-base transition flex items-center justify-between opacity-60";
+                }
+            });
+
+            // Feedback visual em caixa
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            const feedbackIcon = document.getElementById('quiz-feedback-icon');
+            const feedbackText = document.getElementById('quiz-feedback-text');
+
+            feedbackBox.classList.remove('hidden');
+            if (isCorrect) {
+                feedbackBox.className = "p-4 rounded-xl border border-emerald-300 bg-emerald-100 text-emerald-900 text-sm font-bold flex items-center gap-3";
+                feedbackIcon.className = "fa-solid fa-circle-check text-emerald-600 text-xl";
+                feedbackText.textContent = "✅ Resposta correta!";
+            } else {
+                feedbackBox.className = "p-4 rounded-xl border border-rose-300 bg-rose-100 text-rose-900 text-sm font-bold flex items-center gap-3";
+                feedbackIcon.className = "fa-solid fa-circle-xmark text-rose-600 text-xl";
+                feedbackText.textContent = `❌ Resposta incorreta! A resposta correta era: ${currentQ.options[currentQ.correct]}`;
+            }
+
+            // Habilitar botão Próximo
+            const btnNext = document.getElementById('btn-quiz-next');
+            btnNext.disabled = false;
+            btnNext.className = "bg-senac-blue hover:bg-senac-navy text-white font-bold px-6 py-3 rounded-xl transition cursor-pointer flex items-center gap-2 shadow";
+        }
+
+        document.getElementById('btn-quiz-next').onclick = () => {
+            if (!quizAnswered) return;
+
+            quizCurrentIndex++;
+
+            if (quizCurrentIndex < quizData.length) {
+                loadQuizQuestion();
+            } else {
+                showQuizResults();
+            }
+        };
+
+        function showQuizResults() {
+            document.getElementById('quiz-card-active').classList.add('hidden');
+            const resultCard = document.getElementById('quiz-card-result');
+            resultCard.classList.remove('hidden');
+
+            const total = quizData.length;
+            const percentage = ((quizScore / total) * 100).toFixed(1).replace('.0', '');
+
+            document.getElementById('quiz-score-highlight').textContent = `Você acertou ${quizScore} de ${total} perguntas!`;
+            document.getElementById('quiz-percentage-text').textContent = `${percentage}% de aproveitamento`;
+
+            const messageCard = document.getElementById('quiz-message-card');
+
+            if (quizScore === 8) {
+                messageCard.className = "bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-emerald-900 font-extrabold text-base max-w-lg mx-auto";
+                messageCard.textContent = "🏆 Excelente! Você dominou o assunto!";
+            } else if (quizScore >= 6) {
+                messageCard.className = "bg-blue-50 border border-blue-200 p-4 rounded-xl text-blue-900 font-extrabold text-base max-w-lg mx-auto";
+                messageCard.textContent = "👏 Muito bem! Você tem bons conhecimentos!";
+            } else if (quizScore >= 4) {
+                messageCard.className = "bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-900 font-extrabold text-base max-w-lg mx-auto";
+                messageCard.textContent = "👍 Bom trabalho! Continue praticando!";
+            } else {
+                messageCard.className = "bg-rose-50 border border-rose-200 p-4 rounded-xl text-rose-900 font-extrabold text-base max-w-lg mx-auto";
+                messageCard.textContent = "📚 Que tal tentar novamente?";
+            }
+        }
+
+        function restartQuiz() {
+            quizCurrentIndex = 0;
+            quizScore = 0;
+            document.getElementById('quiz-card-result').classList.add('hidden');
+            document.getElementById('quiz-card-active').classList.remove('hidden');
+            loadQuizQuestion();
+        }
+
+
+        // -------------------------------------------------------------
+        // DADOS E LÓGICA DO JOGO DOS 7 ERROS (INTEGRALMENTE PRESERVADO)
+        // -------------------------------------------------------------
         const errorsList = [
             { id: 1, text: "Placa Superior do teto (Texto e cor alterados)", hint: "Olha para a placa azul suspensa no teto do lado direito.", bbox: { minX: 0.68, maxX: 0.82, minY: 0.08, maxY: 0.25 } },
             { id: 2, text: "Detergente verde Ypê na prateleira de comida", hint: "Procura um frasco de detergente verde na estante do lado esquerdo.", bbox: { minX: 0.52, maxX: 0.60, minY: 0.38, maxY: 0.48 } },
@@ -398,7 +847,6 @@
             { id: 7, text: "Painel laranja ao fundo perto do Hortifruti", hint: "Compara a parede do lado esquerdo do letreiro 'HORTIFRUTI'.", bbox: { minX: 0.68, maxX: 0.71, minY: 0.33, maxY: 0.39 } }
         ];
 
-        // Estado do Jogo
         let currentColor = '#ef4444';
         let currentTool = 'pen'; 
         let brushSize = 8;
@@ -407,7 +855,6 @@
         let showHints = false;
         let checkedErrors = new Set();
 
-        // Elementos do DOM
         const gameImg = document.getElementById('game-image');
         const canvas = document.getElementById('drawing-canvas');
         const ctx = canvas.getContext('2d');
@@ -420,7 +867,6 @@
         const toastFound = document.getElementById('toast-found');
         const toastText = document.getElementById('toast-text');
 
-        // Sincronizar tamanho do Canvas com a Imagem
         function syncCanvasSize() {
             const width = gameImg.clientWidth;
             const height = gameImg.clientHeight;
@@ -445,7 +891,6 @@
         gameImg.addEventListener('load', syncCanvasSize);
         window.addEventListener('resize', syncCanvasSize);
 
-        // Obter coordenadas
         function getCoordinates(e) {
             const rect = canvas.getBoundingClientRect();
             let clientX = e.clientX;
@@ -462,7 +907,6 @@
             };
         }
 
-        // Deteção se a linha interseta algum erro
         function checkErrorDetection(pointX, pointY) {
             const relX = pointX / canvas.width;
             const relY = pointY / canvas.height;
@@ -489,7 +933,6 @@
             }, 2500);
         }
 
-        // Desenhar
         function startDrawing(e) {
             e.preventDefault();
             isDrawing = true;
@@ -546,7 +989,6 @@
             strokeHistory.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
         }
 
-        // Eventos
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDrawing);
@@ -556,7 +998,6 @@
         canvas.addEventListener('touchmove', draw, { passive: false });
         canvas.addEventListener('touchend', stopDrawing);
 
-        // Seleção de Cores e Ferramentas
         colorBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 colorBtns.forEach(b => b.classList.remove('active'));
@@ -597,7 +1038,6 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
 
-        // Atualizar Placar e Lista
         function renderChecklist() {
             checklistContainer.innerHTML = '';
             
@@ -666,10 +1106,12 @@
             victoryModal.classList.add('hidden');
         });
 
-        // Inicialização
+        // INICIALIZAÇÃO DA PÁGINA
         window.addEventListener('load', () => {
             syncCanvasSize();
             renderChecklist();
+            loadQuizQuestion();
+            switchTab('menu'); // Inicia no Menu Principal
         });
     </script>
 </body>

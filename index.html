@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma Educacional SENAC - Jogos Interativos</title>
+    <title>DESAFIO SENAC - Plataforma Educacional de Jogos</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,12 +12,13 @@
                 extend: {
                     colors: {
                         senac: {
-                            blue: '#004587',     // Azul Institucional Senac
-                            navy: '#002B54',     // Azul Escuro Profundo
-                            orange: '#F37021',   // Laranja Senac
+                            navy: '#002B54',       // Azul Escuro Institucional
+                            blue: '#004587',       // Azul Principal
+                            lightBlue: '#0072CE',  // Azul Destaque/Acentos
+                            orange: '#F37021',     // Laranja Senac
                             orangeHover: '#d95d12',
-                            lightBg: '#F8FAFC',
-                            cardBg: '#FFFFFF'
+                            bgGray: '#F8FAFC',
+                            cardBorder: '#E2E8F0'
                         }
                     },
                     fontFamily: {
@@ -32,12 +33,12 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
         }
         .canvas-overlay {
             position: absolute;
@@ -62,190 +63,341 @@
         .animate-pop {
             animation: pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        .item-selected {
+            ring: 4px;
+            ring-color: #F37021;
+            background-color: #fff7ed !important;
+            transform: scale(1.03);
+        }
     </style>
 </head>
-<body class="min-h-screen text-slate-800 flex flex-col bg-slate-50 antialiased">
+<body class="min-h-screen text-slate-800 flex flex-col bg-slate-50 antialiased select-none">
 
-    <!-- Header Institucional SENAC -->
-    <header class="bg-senac-navy text-white sticky top-0 z-40 shadow-md border-b-4 border-senac-orange">
+    <!-- BARRA DE NAVEGAÇÃO PRINCIPAL (NAVBAR) -->
+    <header class="bg-senac-navy text-white sticky top-0 z-50 shadow-lg border-b-4 border-senac-orange">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             
-            <!-- Logo e Título do Projeto -->
-            <button onclick="switchTab('menu')" class="flex items-center space-x-4 focus:outline-none group">
-                <div class="bg-white px-3 py-1.5 rounded-md flex items-center justify-center shadow-sm group-hover:bg-slate-50 transition">
+            <!-- Logo Institucional do SENAC & Nome do Projeto -->
+            <button onclick="navigateTo('home')" class="flex items-center space-x-3.5 text-left focus:outline-none group">
+                <div class="bg-white px-3.5 py-1.5 rounded-md flex items-center justify-center shadow-md group-hover:bg-slate-50 transition">
                     <svg class="h-8 w-auto" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 28C16 28 19 25 19 21C19 16 12 15 12 12C12 10 14 9 17 9C19.5 9 22 10 24 11.5L26 7.5C23.5 5.5 20.5 4.5 17 4.5C10.5 4.5 6 8 6 12.5C6 17.5 13 18.5 13 21.5C13 23.5 10.5 24.5 8 24.5C5 24.5 2.5 23 0.5 21L-1.5 25C1 27.5 4.5 29 8.5 29C9.7 29 10.9 28.7 12 28Z" fill="#F37021" transform="translate(5, 4)"/>
                         <text x="32" y="27" font-family="'Inter', sans-serif" font-weight="900" font-size="24" fill="#004587" letter-spacing="-0.5">Senac</text>
                     </svg>
                 </div>
-                <div class="hidden sm:block border-l border-slate-600 h-8"></div>
-                <span class="hidden sm:inline-block font-semibold text-slate-200 text-sm tracking-wide">
-                    Plataforma Educacional Interativa
-                </span>
+                <div class="border-l border-slate-600 h-8 hidden sm:block"></div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-white text-lg tracking-tight leading-tight">DESAFIO SENAC</span>
+                    <span class="text-[10px] font-medium text-slate-300 uppercase tracking-widest hidden md:inline">Aprendizagem Profissional</span>
+                </div>
             </button>
 
-            <!-- Menu de Navegação -->
-            <nav class="flex items-center space-x-2 sm:space-x-6 font-medium text-xs sm:text-sm">
-                <button onclick="switchTab('menu')" id="nav-menu" class="text-white hover:text-senac-orange transition px-2 py-1">Início</button>
-                <button onclick="switchTab('erros')" id="nav-erros" class="text-slate-300 hover:text-white transition px-2 py-1">🎯 7 Erros</button>
-                <button onclick="switchTab('quiz')" id="nav-quiz" class="text-slate-300 hover:text-white transition px-2 py-1">🧠 Quiz Gôndolas</button>
+            <!-- Links de Navegação Desktop -->
+            <nav class="hidden lg:flex items-center space-x-8 font-semibold text-sm">
+                <button onclick="navigateTo('home')" id="nav-desktop-home" class="text-white hover:text-senac-orange transition py-2 border-b-2 border-senac-orange">INÍCIO</button>
+                <button onclick="navigateTo('erros')" id="nav-desktop-erros" class="text-slate-300 hover:text-white transition py-2">7 ERROS</button>
+                <button onclick="navigateTo('quiz')" id="nav-desktop-quiz" class="text-slate-300 hover:text-white transition py-2">QUIZ</button>
+                <button onclick="navigateTo('organize')" id="nav-desktop-organize" class="text-slate-300 hover:text-white transition py-2">ORGANIZE A GÔNDOLA</button>
             </nav>
 
-            <!-- Botão de Ação / Projeto -->
-            <div class="hidden md:flex items-center space-x-3">
-                <a href="#sobre-projeto" onclick="switchTab('menu')" class="bg-senac-orange hover:bg-senac-orangeHover text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-150 shadow-sm flex items-center gap-2">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                    <span>Projeto Acadêmico</span>
-                </a>
-            </div>
+            <!-- Botão Menu Hambúrguer (Mobile) -->
+            <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="lg:hidden text-white p-2 rounded-lg hover:bg-white/10 transition text-2xl focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Menu Hambúrguer Suspenso (Mobile) -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-senac-navy border-t border-slate-700 px-4 pt-3 pb-6 space-y-3 shadow-xl">
+            <button onclick="navigateTo('home'); toggleMobileMenu();" class="w-full text-left font-bold text-sm text-white hover:text-senac-orange py-2 px-3 rounded-lg hover:bg-white/5 transition flex items-center gap-3">
+                <i class="fa-solid fa-house text-senac-orange"></i> INÍCIO
+            </button>
+            <button onclick="navigateTo('erros'); toggleMobileMenu();" class="w-full text-left font-bold text-sm text-slate-200 hover:text-white py-2 px-3 rounded-lg hover:bg-white/5 transition flex items-center gap-3">
+                <span>🎯</span> 7 ERROS
+            </button>
+            <button onclick="navigateTo('quiz'); toggleMobileMenu();" class="w-full text-left font-bold text-sm text-slate-200 hover:text-white py-2 px-3 rounded-lg hover:bg-white/5 transition flex items-center gap-3">
+                <span>🧠</span> QUIZ DAS GÔNDOLAS
+            </button>
+            <button onclick="navigateTo('organize'); toggleMobileMenu();" class="w-full text-left font-bold text-sm text-slate-200 hover:text-white py-2 px-3 rounded-lg hover:bg-white/5 transition flex items-center gap-3">
+                <span>📦</span> ORGANIZE AS GÔNDOLAS
+            </button>
         </div>
     </header>
 
-    <!-- Sub-hero Banner Institucional -->
-    <section class="bg-gradient-to-r from-senac-navy via-senac-blue to-slate-800 text-white py-6 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-senac-orange mb-2 border border-white/10">
-                    <i class="fa-solid fa-brain"></i> Treinamento Operacional de Supermercados
-                </div>
-                <h1 id="page-hero-title" class="text-2xl md:text-3xl font-extrabold tracking-tight">Plataforma de Jogos Educacionais</h1>
-                <p id="page-hero-desc" class="text-slate-300 text-sm md:text-base mt-1 max-w-2xl">
-                    Selecione uma das atividades abaixo para exercitar a atenção visual ou testar os conhecimentos sobre reposição de mercadorias.
-                </p>
-            </div>
-            
-            <!-- Placar de Progresso (Visível no Jogo dos 7 Erros) -->
-            <div id="erros-progress-badge" class="hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 items-center gap-4 self-start md:self-auto shadow-inner">
-                <div class="w-12 h-12 rounded-lg bg-senac-orange flex items-center justify-center text-white text-xl shadow">
-                    <i class="fa-solid fa-bullseye"></i>
-                </div>
-                <div>
-                    <span class="text-xs uppercase tracking-wider text-slate-300 font-medium block">Erros Encontrados</span>
-                    <div class="text-xl font-extrabold text-white flex items-center gap-1">
-                        <span id="error-count" class="text-amber-300 text-2xl font-black">0</span> / 7 <span class="text-xs font-normal text-slate-300 ml-1">no cenário</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Toast de Notificação -->
+    <!-- Toast de Notificação Geral -->
     <div id="toast-found" class="fixed top-24 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-50 text-sm border border-emerald-400">
         <i class="fa-solid fa-circle-check text-xl"></i>
-        <span id="toast-text">Excelente! Encontrou um erro!</span>
+        <span id="toast-text">Excelente!</span>
     </div>
 
-    <!-- Conteúdo Principal Dinâmico -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="flex-1 w-full">
 
-        <!-- ================= SEÇÃO: MENU PRINCIPAL ================= -->
-        <section id="section-menu" class="space-y-8 py-4">
-            <div class="text-center max-w-2xl mx-auto">
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-senac-navy">Escolha o Desafio Educacional</h2>
-                <p class="text-slate-600 text-sm mt-2">
-                    Desenvolva habilidades práticas de organização, reposição e atenção aos detalhes através de nossos jogos interativos.
-                </p>
-            </div>
-
-            <!-- Grade dos Dois Jogos -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                
-                <!-- Cartão 1: Jogo dos 7 Erros -->
-                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 hover:border-senac-orange/60 transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-1">
-                    <div class="p-6 sm:p-8">
-                        <div class="w-16 h-16 bg-amber-100 text-senac-orange rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm group-hover:scale-110 transition-transform">
-                            🎯
-                        </div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-senac-orange bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Percepção Visual</span>
-                        <h3 class="text-2xl font-bold text-senac-navy mt-3 mb-2">Jogo dos 7 Erros</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
-                            Examine atentamente o cenário do supermercado, compare as imagens das gôndolas e marque as 7 falhas de organização.
-                        </p>
-                        <ul class="text-xs text-slate-500 space-y-2 mb-6">
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Deteção automática por toque ou clique</li>
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Ferramentas completas de marcação e desenho</li>
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Pistas interativas de apoio</li>
-                        </ul>
-                    </div>
-                    <div class="p-6 bg-slate-50 border-t border-slate-100">
-                        <button onclick="switchTab('erros')" class="w-full bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3.5 px-6 rounded-xl transition shadow-md flex items-center justify-center gap-2">
-                            <span>Jogar 7 Erros</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Cartão 2: Quiz das Gôndolas -->
-                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 hover:border-senac-blue/60 transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-1">
-                    <div class="p-6 sm:p-8">
-                        <div class="w-16 h-16 bg-blue-100 text-senac-blue rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm group-hover:scale-110 transition-transform">
-                            🧠
-                        </div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-senac-blue bg-blue-50 px-3 py-1 rounded-full border border-blue-200">Conhecimento Operacional</span>
-                        <h3 class="text-2xl font-bold text-senac-navy mt-3 mb-2">Quiz das Gôndolas</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
-                            Responda a 8 perguntas objetivas sobre boas práticas no trabalho em supermercados, regras do PEPS, validade e precificação.
-                        </p>
-                        <ul class="text-xs text-slate-500 space-y-2 mb-6">
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 8 Questões objetivas e educativas</li>
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Feedback imediato de acerto ou erro</li>
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> Relatório final com taxa de aproveitamento</li>
-                        </ul>
-                    </div>
-                    <div class="p-6 bg-slate-50 border-t border-slate-100">
-                        <button onclick="switchTab('quiz')" class="w-full bg-senac-blue hover:bg-senac-navy text-white font-bold py-3.5 px-6 rounded-xl transition shadow-md flex items-center justify-center gap-2">
-                            <span>Iniciar Quiz das Gôndolas</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- ================= SEÇÃO: JOGO DOS 7 ERROS ================= -->
-        <section id="section-erros" class="hidden space-y-8">
+        <!-- ================================================================= -->
+        <!-- PÁGINA INICIAL / HOME (ESTRUTURA COMPLETA INSTITUCIONAL) -->
+        <!-- ================================================================= -->
+        <div id="view-home" class="space-y-16 pb-16">
             
-            <!-- Moldura Institucional do Jogo -->
-            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+            <!-- HERO BANNER PRINCIPAL -->
+            <section class="bg-gradient-to-br from-senac-navy via-senac-blue to-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8 border-b-8 border-senac-orange relative overflow-hidden">
+                <!-- Elementos decorativos de fundo -->
+                <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-senac-lightBlue/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -top-20 w-80 h-80 bg-senac-orange/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+                    
+                    <!-- Lado Esquerdo: Textos do Hero -->
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-senac-orange border border-white/15">
+                            <i class="fa-solid fa-award"></i> Qualificação Profissional em Serviços de Supermercado
+                        </div>
+                        
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-white">
+                            DESAFIO SENAC
+                        </h1>
+                        
+                        <p class="text-lg sm:text-xl font-semibold text-senac-orange">
+                            Aprenda brincando sobre a rotina de um supermercado.
+                        </p>
+                        
+                        <p class="text-slate-300 text-base sm:text-lg max-w-2xl font-normal leading-relaxed">
+                            Teste seus conhecimentos, observe os detalhes e organize uma gôndola de supermercado.
+                        </p>
+
+                        <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                            <a href="#desafios-section" class="w-full sm:w-auto bg-senac-orange hover:bg-senac-orangeHover text-white text-base font-extrabold px-8 py-4 rounded-xl transition duration-200 shadow-xl flex items-center justify-center gap-3 transform hover:-translate-y-0.5">
+                                <span>COMEÇAR AGORA</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Lado Direito: Ilustração do Hero -->
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="relative w-full max-w-md bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-2xl">
+                            <div class="bg-gradient-to-tr from-senac-navy to-senac-blue rounded-2xl p-6 text-center space-y-4 border border-white/10">
+                                <div class="w-20 h-20 bg-senac-orange rounded-2xl flex items-center justify-center text-4xl text-white mx-auto shadow-lg">
+                                    <i class="fa-solid fa-store"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-white">Simulador Operacional</h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Desenvolva habilidades práticas de exposição, precificação, organização por seções e método PEPS.
+                                </p>
+                                <div class="grid grid-cols-3 gap-2 pt-2 text-center text-xs font-semibold text-slate-200">
+                                    <div class="bg-white/10 p-2 rounded-lg">🎯 Atenção</div>
+                                    <div class="bg-white/10 p-2 rounded-lg">🧠 Teoria</div>
+                                    <div class="bg-white/10 p-2 rounded-lg">📦 Prática</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SEÇÃO ESCOLHA SEU DESAFIO (3 CARDS GRANDES DE IMPACTO) -->
+            <section id="desafios-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 pt-6">
                 
-                <!-- Barra Superior do Container da Imagem -->
-                <div class="bg-slate-100 px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
-                        <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Área de Análise Comparativa</span>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <button id="btn-reset" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition duration-150 flex items-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-rotate-right"></i> Reiniciar Desafio
-                        </button>
-                    </div>
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <span class="text-senac-blue font-extrabold text-xs uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-full border border-blue-200">Modalidades Práticas</span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-senac-navy">Escolha seu desafio</h2>
+                    <p class="text-slate-600 text-sm sm:text-base">
+                        Selecione uma das opções abaixo para iniciar o jogo correspondente:
+                    </p>
                 </div>
 
-                <!-- Imagem e Canvas de Marcação -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- CARD 1: JOGO DOS 7 ERROS -->
+                    <div class="bg-white rounded-3xl shadow-xl border border-slate-200 hover:border-senac-orange transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-2">
+                        <div class="p-8 space-y-6">
+                            <!-- Ícone e Ilustração -->
+                            <div class="flex items-center justify-between">
+                                <div class="w-16 h-16 bg-amber-100 text-senac-orange rounded-2xl flex items-center justify-center text-3xl font-black shadow-sm group-hover:scale-110 transition-transform">
+                                    🎯
+                                </div>
+                                <span class="bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold px-3 py-1 rounded-full">Observação</span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h3 class="text-2xl font-black text-senac-navy group-hover:text-senac-orange transition">
+                                    JOGO DOS 7 ERROS
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed font-medium">
+                                    Observe a gôndola e encontre os 7 erros.
+                                </p>
+                            </div>
+
+                            <!-- Mini Banner Ilustrativo do Card -->
+                            <div class="bg-slate-900 rounded-xl p-4 text-center border border-slate-800 text-slate-300 text-xs space-y-2">
+                                <div class="flex justify-center gap-2 text-base text-amber-400">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <i class="fa-solid fa-eye"></i>
+                                </div>
+                                <p class="font-semibold text-slate-200">Análise Comparativa de Cenário</p>
+                            </div>
+                        </div>
+
+                        <div class="p-6 bg-slate-50 border-t border-slate-100">
+                            <button onclick="navigateTo('erros')" class="w-full bg-senac-orange hover:bg-senac-orangeHover text-white font-black py-4 px-6 rounded-xl transition duration-150 shadow-lg flex items-center justify-center gap-3 group-hover:shadow-orange-200">
+                                <span>JOGAR AGORA</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: QUIZ DAS GÔNDOLAS -->
+                    <div class="bg-white rounded-3xl shadow-xl border border-slate-200 hover:border-senac-blue transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-2">
+                        <div class="p-8 space-y-6">
+                            <!-- Ícone e Ilustração -->
+                            <div class="flex items-center justify-between">
+                                <div class="w-16 h-16 bg-blue-100 text-senac-blue rounded-2xl flex items-center justify-center text-3xl font-black shadow-sm group-hover:scale-110 transition-transform">
+                                    🧠
+                                </div>
+                                <span class="bg-blue-50 text-senac-blue border border-blue-200 text-xs font-bold px-3 py-1 rounded-full">Conhecimento</span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h3 class="text-2xl font-black text-senac-navy group-hover:text-senac-blue transition">
+                                    QUIZ DAS GÔNDOLAS
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed font-medium">
+                                    Responda 8 perguntas e teste seus conhecimentos sobre organização e exposição de produtos.
+                                </p>
+                            </div>
+
+                            <!-- Mini Banner Ilustrativo do Card -->
+                            <div class="bg-slate-900 rounded-xl p-4 text-center border border-slate-800 text-slate-300 text-xs space-y-2">
+                                <div class="flex justify-center gap-2 text-base text-cyan-400">
+                                    <i class="fa-solid fa-clipboard-question"></i>
+                                    <i class="fa-solid fa-list-check"></i>
+                                </div>
+                                <p class="font-semibold text-slate-200">8 Questões com Feedback Imediato</p>
+                            </div>
+                        </div>
+
+                        <div class="p-6 bg-slate-50 border-t border-slate-100">
+                            <button onclick="navigateTo('quiz')" class="w-full bg-senac-blue hover:bg-senac-navy text-white font-black py-4 px-6 rounded-xl transition duration-150 shadow-lg flex items-center justify-center gap-3">
+                                <span>JOGAR AGORA</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CARD 3: ORGANIZE AS GÔNDOLAS -->
+                    <div class="bg-white rounded-3xl shadow-xl border border-slate-200 hover:border-emerald-500 transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-2">
+                        <div class="p-8 space-y-6">
+                            <!-- Ícone e Ilustração -->
+                            <div class="flex items-center justify-between">
+                                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl font-black shadow-sm group-hover:scale-110 transition-transform">
+                                    📦
+                                </div>
+                                <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold px-3 py-1 rounded-full">Prática Guiada</span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h3 class="text-2xl font-black text-senac-navy group-hover:text-emerald-600 transition">
+                                    ORGANIZE AS GÔNDOLAS
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed font-medium">
+                                    Coloque cada produto no lugar correto e organize a gôndola.
+                                </p>
+                            </div>
+
+                            <!-- Mini Banner Ilustrativo do Card -->
+                            <div class="bg-slate-900 rounded-xl p-4 text-center border border-slate-800 text-slate-300 text-xs space-y-2">
+                                <div class="flex justify-center gap-2 text-base text-emerald-400">
+                                    <i class="fa-solid fa-boxes-packing"></i>
+                                    <i class="fa-solid fa-hand-pointer"></i>
+                                </div>
+                                <p class="font-semibold text-slate-200">Categorização e Reposição em Tela</p>
+                            </div>
+                        </div>
+
+                        <div class="p-6 bg-slate-50 border-t border-slate-100">
+                            <button onclick="navigateTo('organize')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-6 rounded-xl transition duration-150 shadow-lg flex items-center justify-center gap-3">
+                                <span>JOGAR AGORA</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- INFORMAÇÕES EDUCACIONAIS DA PLATAFORMA -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+                <div class="bg-white rounded-3xl shadow-lg border border-slate-200 p-8 sm:p-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="space-y-2">
+                        <div class="text-senac-orange text-2xl font-black"><i class="fa-solid fa-bullseye"></i> Foco e Percepção</div>
+                        <p class="text-slate-600 text-xs leading-relaxed">
+                            Aprimore a atenção aos detalhes para rápida identificação de avarias, etiquetas incorretas e falhas na exposição.
+                        </p>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="text-senac-blue text-2xl font-black"><i class="fa-solid fa-boxes-stacked"></i> Regras de Reposição</div>
+                        <p class="text-slate-600 text-xs leading-relaxed">
+                            Fortaleça os conceitos da metodologia PEPS (Primeiro que Entra, Primeiro que Sai) e organização por seções.
+                        </p>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="text-emerald-600 text-2xl font-black"><i class="fa-solid fa-mobile-screen-button"></i> 100% Responsivo</div>
+                        <p class="text-slate-600 text-xs leading-relaxed">
+                            Desenvolvido especialmente para acesso fácil em celulares e computadores durante aulas práticas.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+
+        <!-- ================================================================= -->
+        <!-- JOGO 1: JOGO DOS 7 ERROS (100% PRESERVADO) -->
+        <!-- ================================================================= -->
+        <div id="view-erros" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            
+            <!-- Botão de Retorno à Home -->
+            <div class="flex items-center justify-between">
+                <button onclick="navigateTo('home')" class="bg-white hover:bg-slate-100 text-senac-navy border-2 border-slate-200 px-5 py-2.5 rounded-xl font-bold text-xs transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar para o início
+                </button>
+
+                <div class="bg-senac-navy text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow">
+                    <span>🎯 ERROS ENCONTRADOS:</span>
+                    <span id="error-count" class="text-amber-400 text-base font-black">0</span> / 7
+                </div>
+            </div>
+
+            <!-- Moldura do Jogo dos 7 Erros -->
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+                <div class="bg-slate-100 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        Análise Comparativa de Imagem
+                    </span>
+                    <button id="btn-reset" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-rotate-right"></i> Reiniciar
+                    </button>
+                </div>
+
+                <!-- ÁREA DE IMAGEM HD + CANVAS -->
                 <div class="p-4 sm:p-6 bg-slate-900 flex justify-center items-center">
-                    <div id="image-wrapper" class="relative w-full max-w-4xl bg-slate-950 rounded-lg overflow-hidden shadow-2xl border border-slate-800">
-                        
-                        <!-- Imagem do Jogo em Alta Definição -->
+                    <div id="image-wrapper" class="relative w-full max-w-4xl bg-slate-950 rounded-xl overflow-hidden shadow-2xl border border-slate-800">
                         <img id="game-image" 
                              src="https://i.im.ge/QMHO1o6/378d4322-bb49-49a1-a53e-e9b1ae5053ca.jpg" 
                              onerror="this.onerror=null; this.src='uploaded:image.png-0fa6646f-5ee3-4349-8525-6b5adccbd73a';"
                              alt="Jogo dos 7 Erros Supermercado" 
                              class="w-full h-auto block select-none pointer-events-none">
                         
-                        <!-- Canvas Transparente para Desenho -->
                         <canvas id="drawing-canvas" class="canvas-overlay w-full h-full"></canvas>
                     </div>
                 </div>
 
-                <!-- Painel de Ferramentas de Marcação -->
+                <!-- PAINEL DE FERRAMENTAS -->
                 <div class="bg-slate-50 border-t border-slate-200 p-4 sm:p-6">
                     <div class="flex flex-wrap items-center justify-between gap-4">
-                        
-                        <!-- Paleta de Cores -->
                         <div class="flex items-center space-x-3">
-                            <span class="text-xs font-bold uppercase text-slate-500 tracking-wider">Cores do Marcador:</span>
+                            <span class="text-xs font-bold uppercase text-slate-500 tracking-wider">Cores:</span>
                             <div class="flex items-center space-x-2">
                                 <button data-color="#ef4444" title="Vermelho" class="color-btn active w-8 h-8 rounded-full bg-red-500 border-2 border-white shadow-sm transition transform"></button>
                                 <button data-color="#004587" title="Azul Senac" class="color-btn w-8 h-8 rounded-full bg-blue-700 border-2 border-white shadow-sm transition transform"></button>
@@ -256,16 +408,13 @@
                             </div>
                         </div>
 
-                        <!-- Pincel, Marcador e Borracha -->
                         <div class="flex flex-wrap items-center gap-3">
-                            <!-- Espessura -->
                             <div class="flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
                                 <i class="fa-solid fa-circle text-[10px] text-slate-400"></i>
                                 <input id="brush-size" type="range" min="3" max="25" value="8" class="w-20 accent-senac-blue cursor-pointer">
                                 <i class="fa-solid fa-circle text-base text-slate-600"></i>
                             </div>
 
-                            <!-- Tipos de Ferramentas -->
                             <div class="flex bg-white p-1 rounded-lg border border-slate-200 shadow-sm space-x-1">
                                 <button id="tool-pen" class="tool-btn active px-3 py-1.5 rounded-md text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
                                     <i class="fa-solid fa-pen"></i> Pincel
@@ -278,332 +427,324 @@
                                 </button>
                             </div>
 
-                            <!-- Desfazer e Limpar -->
                             <div class="flex items-center space-x-1">
-                                <button id="btn-undo" title="Desfazer último traço" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
+                                <button id="btn-undo" title="Desfazer" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
                                     <i class="fa-solid fa-rotate-left"></i>
                                 </button>
-                                <button id="btn-clear-canvas" title="Limpar todo o desenho" class="bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
+                                <button id="btn-clear-canvas" title="Limpar" class="bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-700 border border-slate-200 p-2 rounded-lg text-xs font-semibold transition shadow-sm">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 </div>
-
             </div>
 
-            <!-- Seção: Lista dos Erros Encontrados -->
-            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8">
+            <!-- CHECKLIST DE ERROS -->
+            <div class="bg-white rounded-3xl shadow-lg border border-slate-200 p-6 sm:p-8">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
                     <div>
                         <h2 class="text-xl font-bold text-senac-navy flex items-center gap-2">
                             <i class="fa-solid fa-list-check text-senac-orange"></i>
-                            Lista de Erros Identificados
+                            Lista dos 7 Erros
                         </h2>
-                        <p class="text-xs text-slate-500 mt-1">
-                            À medida que marca as inconformidades na imagem, a lista será atualizada automaticamente.
-                        </p>
+                        <p class="text-xs text-slate-500 mt-1">Marcação automática por coordenadas ao riscar na imagem.</p>
                     </div>
-                    <button id="btn-toggle-hints" class="self-start md:self-auto bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-2 shadow-sm">
-                        <i class="fa-solid fa-lightbulb text-amber-600"></i> Alternar Pistas de Apoio
+                    <button id="btn-toggle-hints" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-lightbulb text-amber-600"></i> Alternar Pistas
                     </button>
                 </div>
 
-                <div id="checklist-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <!-- Elementos gerados dinamicamente via JS -->
-                </div>
+                <div id="checklist-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
             </div>
 
-        </section>
+        </div>
 
 
-        <!-- ================= SEÇÃO: QUIZ DAS GÔNDOLAS ================= -->
-        <section id="section-quiz" class="hidden space-y-8 max-w-4xl mx-auto">
+        <!-- ================================================================= -->
+        <!-- JOGO 2: QUIZ DAS GÔNDOLAS (EXATAMENTE 8 PERGUNTAS) -->
+        <!-- ================================================================= -->
+        <div id="view-quiz" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
             
-            <!-- Cartão Principal do Quiz -->
-            <div id="quiz-card-active" class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-                
-                <!-- Barra de Cabeçalho do Quiz -->
+            <div class="flex items-center justify-between">
+                <button onclick="navigateTo('home')" class="bg-white hover:bg-slate-100 text-senac-navy border-2 border-slate-200 px-5 py-2.5 rounded-xl font-bold text-xs transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar para o início
+                </button>
+            </div>
+
+            <!-- QUIZ CARD ATIVO -->
+            <div id="quiz-card-active" class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
                 <div class="bg-slate-100 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
                     <span id="quiz-step-indicator" class="text-xs font-bold uppercase tracking-wider text-senac-blue bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
                         Pergunta 1 de 8
                     </span>
                     <span class="text-xs font-semibold text-slate-500">
-                        Aproveitamento: <span id="quiz-live-score" class="font-bold text-senac-orange">0</span> acertos
+                        Acertos: <span id="quiz-live-score" class="font-bold text-senac-orange">0</span>
                     </span>
                 </div>
 
-                <!-- Barra de Progresso Visual -->
                 <div class="w-full bg-slate-200 h-2">
                     <div id="quiz-progress-bar" class="bg-senac-orange h-2 transition-all duration-300 w-1/8"></div>
                 </div>
 
                 <div class="p-6 sm:p-8 space-y-6">
-                    <!-- Texto da Questão -->
                     <h3 id="quiz-question-text" class="text-lg sm:text-xl font-bold text-senac-navy leading-snug">
                         Carregando pergunta...
                     </h3>
 
-                    <!-- Opções / Alternativas de Resposta -->
-                    <div id="quiz-options-container" class="space-y-3 pt-2">
-                        <!-- Alternativas inseridas via JS -->
-                    </div>
+                    <div id="quiz-options-container" class="space-y-3 pt-2"></div>
 
-                    <!-- Caixas de Feedback Válido / Inválido -->
                     <div id="quiz-feedback-box" class="hidden p-4 rounded-xl border text-sm font-semibold flex items-center gap-3">
                         <span id="quiz-feedback-icon" class="text-xl"></span>
                         <span id="quiz-feedback-text"></span>
                     </div>
 
-                    <!-- Ações do Quiz -->
                     <div class="pt-4 flex justify-end border-t border-slate-100">
-                        <button id="btn-quiz-next" disabled class="bg-slate-300 text-slate-500 font-bold px-6 py-3 rounded-xl transition cursor-not-allowed flex items-center gap-2">
-                            <span>Próxima Pergunta</span>
+                        <button id="btn-quiz-next" disabled class="bg-slate-300 text-slate-500 font-bold px-6 py-3.5 rounded-xl transition cursor-not-allowed flex items-center gap-2 w-full sm:w-auto justify-center">
+                            <span>Próxima pergunta</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
-
             </div>
 
-            <!-- Cartão do Placar Final (Escondido inicialmente) -->
-            <div id="quiz-card-result" class="hidden bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden text-center p-8 sm:p-12 space-y-6">
-                
+            <!-- QUIZ RESULTADO FINAL -->
+            <div id="quiz-card-result" class="hidden bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden text-center p-8 sm:p-12 space-y-6">
                 <div class="w-24 h-24 rounded-full bg-amber-100 text-senac-orange flex items-center justify-center mx-auto text-5xl shadow-inner">
                     <i class="fa-solid fa-trophy"></i>
                 </div>
 
                 <div>
-                    <h3 class="text-2xl sm:text-3xl font-black text-senac-navy">Resultado do Quiz</h3>
+                    <h3 class="text-2xl sm:text-3xl font-black text-senac-navy">🏆 RESULTADO DO QUIZ</h3>
                     <p id="quiz-score-highlight" class="text-lg font-bold text-slate-700 mt-2">
-                        Você acertou 7 de 8 perguntas!
+                        Você acertou 0 de 8 perguntas!
                     </p>
                     <div class="inline-block bg-slate-100 border border-slate-200 rounded-lg px-4 py-1.5 mt-2 text-sm font-semibold text-senac-blue" id="quiz-percentage-text">
-                        87,5% de aproveitamento
+                        0% de aproveitamento
                     </div>
                 </div>
 
-                <!-- Mensagem Personalizada -->
                 <div id="quiz-message-card" class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-900 font-bold text-base max-w-lg mx-auto">
                     🏆 Excelente! Você dominou o assunto!
                 </div>
 
-                <!-- Botões de Ação do Resultado -->
-                <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto">
-                    <button onclick="restartQuiz()" class="w-full sm:w-auto bg-senac-blue hover:bg-senac-navy text-white font-bold py-3 px-5 rounded-xl transition shadow flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-rotate-right"></i>
-                        <span>Jogar novamente</span>
+                <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-xl mx-auto">
+                    <button onclick="restartQuiz()" class="w-full sm:w-auto bg-senac-blue hover:bg-senac-navy text-white font-bold py-3.5 px-5 rounded-xl transition shadow flex items-center justify-center gap-2 text-sm">
+                        <span>🔄 Jogar novamente</span>
                     </button>
-                    <button onclick="switchTab('menu')" class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3 px-5 rounded-xl transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-house"></i>
-                        <span>Voltar ao menu</span>
+                    <button onclick="navigateTo('home')" class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3.5 px-5 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+                        <span>🏠 Voltar ao menu</span>
                     </button>
-                    <button onclick="switchTab('erros')" class="w-full sm:w-auto bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3 px-5 rounded-xl transition shadow flex items-center justify-center gap-2">
-                        🎯 <span>Jogar 7 Erros</span>
+                    <button onclick="navigateTo('erros')" class="w-full sm:w-auto bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3.5 px-5 rounded-xl transition shadow flex items-center justify-center gap-2 text-sm">
+                        <span>🎯 Jogo dos 7 Erros</span>
                     </button>
                 </div>
-
             </div>
 
-        </section>
+        </div>
 
 
-        <!-- ================= INSTRUÇÕES E SOBRE O PROJETO ================= -->
-        <!-- Seção: Como Jogar -->
-        <section id="como-jogar" class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8">
-            <div class="max-w-3xl mb-6">
-                <h2 class="text-xl font-bold text-senac-navy flex items-center gap-2">
-                    <i class="fa-solid fa-circle-info text-senac-blue"></i>
-                    Instruções de Uso / Como Jogar
-                </h2>
-                <p class="text-sm text-slate-600 mt-1">
-                    Metodologia dos desafios disponíveis na plataforma:
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
-                    <div>
-                        <div class="w-8 h-8 rounded-lg bg-senac-blue text-white font-bold flex items-center justify-center text-sm mb-3">1</div>
-                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Escolha um Jogo</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Aceda ao Jogo dos 7 Erros para prática visual ou ao Quiz para testar conceitos teóricos.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
-                    <div>
-                        <div class="w-8 h-8 rounded-lg bg-senac-blue text-white font-bold flex items-center justify-center text-sm mb-3">2</div>
-                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Analise as Questões</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Observe atentamente os detalhes das imagens ou leia com atenção as perguntas de escolha múltipla.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
-                    <div>
-                        <div class="w-8 h-8 rounded-lg bg-senac-blue text-white font-bold flex items-center justify-center text-sm mb-3">3</div>
-                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Marque ou Responda</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Desenhe na tela para sinalizar erros ou toque numa opção no Quiz para receber feedback imediato.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between hover:border-senac-blue/50 transition">
-                    <div>
-                        <div class="w-8 h-8 rounded-lg bg-senac-orange text-white font-bold flex items-center justify-center text-sm mb-3">4</div>
-                        <h3 class="font-semibold text-slate-800 text-sm mb-1">Valide o Aprendizado</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Conclua os desafios e verifique a sua taxa de aproveitamento e tempo de reação.
-                        </p>
-                    </div>
+        <!-- ================================================================= -->
+        <!-- JOGO 3: ORGANIZE AS GÔNDOLAS (SIMULAÇÃO PRÁTICA INTERATIVA) -->
+        <!-- ================================================================= -->
+        <div id="view-organize" class="hidden max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+            
+            <div class="flex items-center justify-between">
+                <button onclick="navigateTo('home')" class="bg-white hover:bg-slate-100 text-senac-navy border-2 border-slate-200 px-5 py-2.5 rounded-xl font-bold text-xs transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar para o início
+                </button>
+                <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 font-bold text-xs sm:text-sm text-senac-navy shadow-sm">
+                    Pontuação: <span id="shelf-score-display" class="text-senac-orange text-base font-black">0</span> pts
                 </div>
             </div>
-        </section>
 
-        <!-- Seção: Sobre o Projeto Acadêmico -->
-        <section id="sobre-projeto" class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8 relative overflow-hidden">
-            <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-slate-100 rounded-full opacity-50 pointer-events-none"></div>
-
-            <div class="relative z-10 max-w-4xl">
-                <div class="inline-flex items-center gap-2 bg-senac-blue/10 text-senac-blue px-3 py-1 rounded-full text-xs font-bold mb-3">
-                    <i class="fa-solid fa-book-open"></i> Apresentação do Projeto
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl text-xs sm:text-sm text-senac-navy flex items-center gap-3 shadow-sm">
+                <i class="fa-solid fa-hand-pointer text-senac-blue text-2xl"></i>
+                <div>
+                    <strong class="block text-sm">Como organizar no Celular ou Computador:</strong>
+                    <span>Toque no produto desejado na caixa abaixo e depois toque na gôndola correspondente. (No computador, você também pode arrastar e soltar).</span>
                 </div>
-                <h2 class="text-2xl font-bold text-senac-navy mb-4">Sobre o Projeto Educacional</h2>
+            </div>
+
+            <div id="shelf-feedback" class="hidden p-3 rounded-xl text-xs sm:text-sm font-bold text-center border transition-all"></div>
+
+            <!-- GÔNDOLA DO SUPERMERCADO -->
+            <div class="bg-slate-800 p-4 sm:p-6 rounded-3xl border-4 border-slate-700 shadow-2xl space-y-4">
+                <div class="flex items-center justify-between text-white border-b border-slate-700 pb-3">
+                    <h3 class="font-extrabold text-base sm:text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-store text-senac-orange"></i> GÔNDOLAS DE EXPOSIÇÃO
+                    </h3>
+                    <span id="shelf-count-placed" class="text-xs bg-slate-700 px-3 py-1 rounded-full text-amber-400 font-bold">0 / 8 Colocados</span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                    <div data-category="LATICÍNIOS" onclick="placeSelectedProduct('LATICÍNIOS')" ondragover="allowDrop(event)" ondrop="dropProduct(event, 'LATICÍNIOS')" class="shelf-zone bg-slate-900 border-2 border-dashed border-slate-600 rounded-2xl p-3 min-h-[120px] flex flex-col justify-between hover:border-senac-orange transition cursor-pointer">
+                        <span class="text-[10px] font-black tracking-widest uppercase bg-blue-900/80 text-blue-200 px-2 py-0.5 rounded self-start">LATICÍNIOS</span>
+                        <div class="shelf-content flex flex-wrap gap-2 items-center justify-center my-2"></div>
+                        <div class="w-full bg-slate-700 h-2 rounded shadow-inner"></div>
+                    </div>
+
+                    <div data-category="MASSAS" onclick="placeSelectedProduct('MASSAS')" ondragover="allowDrop(event)" ondrop="dropProduct(event, 'MASSAS')" class="shelf-zone bg-slate-900 border-2 border-dashed border-slate-600 rounded-2xl p-3 min-h-[120px] flex flex-col justify-between hover:border-senac-orange transition cursor-pointer">
+                        <span class="text-[10px] font-black tracking-widest uppercase bg-amber-900/80 text-amber-200 px-2 py-0.5 rounded self-start">MASSAS</span>
+                        <div class="shelf-content flex flex-wrap gap-2 items-center justify-center my-2"></div>
+                        <div class="w-full bg-slate-700 h-2 rounded shadow-inner"></div>
+                    </div>
+
+                    <div data-category="BEBIDAS" onclick="placeSelectedProduct('BEBIDAS')" ondragover="allowDrop(event)" ondrop="dropProduct(event, 'BEBIDAS')" class="shelf-zone bg-slate-900 border-2 border-dashed border-slate-600 rounded-2xl p-3 min-h-[120px] flex flex-col justify-between hover:border-senac-orange transition cursor-pointer">
+                        <span class="text-[10px] font-black tracking-widest uppercase bg-cyan-900/80 text-cyan-200 px-2 py-0.5 rounded self-start">BEBIDAS</span>
+                        <div class="shelf-content flex flex-wrap gap-2 items-center justify-center my-2"></div>
+                        <div class="w-full bg-slate-700 h-2 rounded shadow-inner"></div>
+                    </div>
+
+                    <div data-category="LIMPEZA" onclick="placeSelectedProduct('LIMPEZA')" ondragover="allowDrop(event)" ondrop="dropProduct(event, 'LIMPEZA')" class="shelf-zone bg-slate-900 border-2 border-dashed border-slate-600 rounded-2xl p-3 min-h-[120px] flex flex-col justify-between hover:border-senac-orange transition cursor-pointer">
+                        <span class="text-[10px] font-black tracking-widest uppercase bg-emerald-900/80 text-emerald-200 px-2 py-0.5 rounded self-start">LIMPEZA</span>
+                        <div class="shelf-content flex flex-wrap gap-2 items-center justify-center my-2"></div>
+                        <div class="w-full bg-slate-700 h-2 rounded shadow-inner"></div>
+                    </div>
+
+                    <div data-category="MERCEARIA" onclick="placeSelectedProduct('MERCEARIA')" ondragover="allowDrop(event)" ondrop="dropProduct(event, 'MERCEARIA')" class="shelf-zone bg-slate-900 border-2 border-dashed border-slate-600 rounded-2xl p-3 min-h-[120px] flex flex-col justify-between hover:border-senac-orange transition cursor-pointer">
+                        <span class="text-[10px] font-black tracking-widest uppercase bg-orange-900/80 text-orange-200 px-2 py-0.5 rounded self-start">MERCEARIA</span>
+                        <div class="shelf-content flex flex-wrap gap-2 items-center justify-center my-2"></div>
+                        <div class="w-full bg-slate-700 h-2 rounded shadow-inner"></div>
+                    </div>
+
+                    <div data-category="DOCES" onclick="placeSelectedProduct('DOCES')" ondragover="allowDrop(event)" ondrop="dropProduct(event, 'DOCES')" class="shelf-zone bg-slate-900 border-2 border-dashed border-slate-600 rounded-2xl p-3 min-h-[120px] flex flex-col justify-between hover:border-senac-orange transition cursor-pointer">
+                        <span class="text-[10px] font-black tracking-widest uppercase bg-purple-900/80 text-purple-200 px-2 py-0.5 rounded self-start">DOCES</span>
+                        <div class="shelf-content flex flex-wrap gap-2 items-center justify-center my-2"></div>
+                        <div class="w-full bg-slate-700 h-2 rounded shadow-inner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAIXA DE ESTOQUE -->
+            <div class="bg-white p-5 rounded-3xl shadow-lg border border-slate-200 space-y-3">
+                <h4 class="font-bold text-slate-800 text-xs sm:text-sm uppercase tracking-wider flex items-center justify-between">
+                    <span><i class="fa-solid fa-boxes-stacked text-senac-blue"></i> Caixas de Reposição</span>
+                    <span id="selected-product-label" class="text-senac-orange font-extrabold text-xs"></span>
+                </h4>
                 
-                <div class="prose prose-slate max-w-none text-slate-600 text-sm leading-relaxed space-y-4">
-                    <p>
-                        Este objeto de aprendizagem interativo foi desenvolvido como parte de uma atividade acadêmica do <strong>SENAC</strong>, combinando conceitos de gamificação, desenvolvimento web e pedagogia ativa.
+                <div id="products-pool" class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2"></div>
+            </div>
+
+            <!-- RESULTADO FINAL DA GÔNDOLA -->
+            <div id="organize-card-result" class="hidden bg-white rounded-3xl shadow-2xl border border-slate-200 text-center p-8 space-y-6">
+                <div class="w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-4xl shadow-inner">
+                    <i class="fa-solid fa-boxes-packing"></i>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-black text-senac-navy">🏆 GÔNDOLA ORGANIZADA!</h3>
+                    <p id="organize-score-text" class="text-base font-bold text-slate-700 mt-2">
+                        Você conseguiu organizar 8 de 8 produtos corretamente.
                     </p>
-                    <p>
-                        O objetivo principal desta aplicação é atuar como uma ferramenta lúdico-pedagógica para aprimorar a <strong>atenção concentrada</strong>, a <strong>percepção espacial</strong>, a <strong>organização de gôndolas</strong> e as regras operacionais de reposição (como a metodologia PEPS).
-                    </p>
+                    <div id="organize-eval-badge" class="inline-block bg-emerald-100 text-emerald-900 border border-emerald-200 px-4 py-1.5 rounded-lg text-sm font-extrabold mt-3">
+                        🏆 Excelente organização!
+                    </div>
                 </div>
 
-                <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
-                    <div class="flex items-center space-x-3">
-                        <div class="text-senac-orange text-lg"><i class="fa-solid fa-eye"></i></div>
-                        <div>
-                            <h4 class="text-xs font-bold text-slate-800">Percepção Visual</h4>
-                            <p class="text-[11px] text-slate-500">Estimulação cognitiva rápida</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <div class="text-senac-orange text-lg"><i class="fa-solid fa-boxes-packing"></i></div>
-                        <div>
-                            <h4 class="text-xs font-bold text-slate-800">Técnicas de Gôndola</h4>
-                            <p class="text-[11px] text-slate-500">Regras de PEPS e Validade</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <div class="text-senac-orange text-lg"><i class="fa-solid fa-award"></i></div>
-                        <div>
-                            <h4 class="text-xs font-bold text-slate-800">Prática Gamificada</h4>
-                            <p class="text-[11px] text-slate-500">Feedback instantâneo</p>
-                        </div>
-                    </div>
+                <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <button onclick="resetOrganizeGame()" class="w-full sm:w-auto bg-senac-blue hover:bg-senac-navy text-white font-bold py-3.5 px-6 rounded-xl transition shadow text-sm">
+                        🔄 Jogar novamente
+                    </button>
+                    <button onclick="navigateTo('home')" class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3.5 px-6 rounded-xl transition text-sm">
+                        🏠 Voltar ao menu
+                    </button>
                 </div>
             </div>
-        </section>
+
+        </div>
 
     </main>
 
-    <!-- Rodapé Institucional -->
-    <footer class="bg-senac-navy text-white mt-12 border-t-4 border-senac-orange py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-300">
+    <!-- RODAPÉ INSTITUCIONAL -->
+    <footer class="bg-senac-navy text-white border-t-4 border-senac-orange py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-300">
             <div class="flex items-center space-x-3">
-                <span class="font-extrabold text-white text-lg tracking-wider">Senac</span>
+                <span class="font-black text-white text-xl tracking-wider">DESAFIO SENAC</span>
                 <span>|</span>
                 <span>Projeto Educacional Acadêmico</span>
             </div>
-            <div>
-                © 2026 - Desenvolvido para fins didáticos e demonstrativos.
+            <div class="text-center md:text-right">
+                <p>© 2026 - Qualificação Profissional em Serviços de Supermercados.</p>
+                <p class="text-[10px] text-slate-400 mt-1">Plataforma desenvolvida para fins estritamente pedagógicos.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Modal de Vitória (7 Erros) -->
+    <!-- MODAL DE VITÓRIA DOS 7 ERROS -->
     <div id="victory-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-        <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-slate-100 transform transition-all scale-95">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-slate-100 transform transition-all">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner">
                 <i class="fa-solid fa-trophy"></i>
             </div>
-            <h3 class="text-2xl font-extrabold text-senac-navy mb-2">Desafio Concluído! 🎉</h3>
+            <h3 class="text-2xl font-black text-senac-navy mb-2">Desafio Concluído! 🎉</h3>
             <p class="text-slate-600 mb-6 text-sm leading-relaxed">
-                Parabéns! Identificou com êxito todas as 7 inconformidades na imagem do supermercado.
+                Parabéns! Você encontrou os 7 erros na imagem do supermercado.
             </p>
             <div class="flex flex-col gap-2">
-                <button id="modal-close" class="w-full bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3 rounded-xl shadow transition">
-                    Continuar a Explorar
+                <button id="modal-close" class="w-full bg-senac-orange hover:bg-senac-orangeHover text-white font-bold py-3 rounded-xl shadow transition text-sm">
+                    Continuar Explorando
                 </button>
-                <button onclick="switchTab('quiz'); document.getElementById('victory-modal').classList.add('hidden');" class="w-full bg-senac-blue hover:bg-senac-navy text-white font-bold py-3 rounded-xl transition">
-                    Ir para o Quiz das Gôndolas
+                <button onclick="navigateTo('home'); document.getElementById('victory-modal').classList.add('hidden');" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3 rounded-xl transition text-sm">
+                    🏠 Voltar ao menu principal
                 </button>
             </div>
         </div>
     </div>
 
 
-    <!-- ================= SISTEMA E LÓGICA JAVASCRIPT ================= -->
+    <!-- ================================================================= -->
+    <!-- CÓDIGO LÓGICO E INTERATIVO (JAVASCRIPT) -->
+    <!-- ================================================================= -->
     <script>
         // -------------------------------------------------------------
-        // NAVEGAÇÃO ENTRE NAVEGADOR / ABAS
+        // NAVEGAÇÃO ENTRE PÁGINAS E VIEWS
         // -------------------------------------------------------------
-        function switchTab(tab) {
-            const secMenu = document.getElementById('section-menu');
-            const secErros = document.getElementById('section-erros');
-            const secQuiz = document.getElementById('section-quiz');
-            const errosBadge = document.getElementById('erros-progress-badge');
+        function navigateTo(view) {
+            const vHome = document.getElementById('view-home');
+            const vErros = document.getElementById('view-erros');
+            const vQuiz = document.getElementById('view-quiz');
+            const vOrganize = document.getElementById('view-organize');
 
-            const navMenu = document.getElementById('nav-menu');
-            const navErros = document.getElementById('nav-erros');
-            const navQuiz = document.getElementById('nav-quiz');
+            vHome.classList.add('hidden');
+            vErros.classList.add('hidden');
+            vQuiz.classList.add('hidden');
+            vOrganize.classList.add('hidden');
 
-            const heroTitle = document.getElementById('page-hero-title');
-            const heroDesc = document.getElementById('page-hero-desc');
+            // Atualizar os links de navegação ativa no topo
+            const navLinks = ['home', 'erros', 'quiz', 'organize'];
+            navLinks.forEach(link => {
+                const navEl = document.getElementById(`nav-desktop-${link}`);
+                if (navEl) {
+                    if (link === view) {
+                        navEl.className = "text-white font-bold border-b-2 border-senac-orange py-2";
+                    } else {
+                        navEl.className = "text-slate-300 hover:text-white transition py-2";
+                    }
+                }
+            });
 
-            // Reset de visibilidade
-            secMenu.classList.add('hidden');
-            secErros.classList.add('hidden');
-            secQuiz.classList.add('hidden');
-            errosBadge.classList.add('hidden');
-            errosBadge.classList.remove('flex');
-
-            navMenu.className = "text-slate-300 hover:text-white transition px-2 py-1";
-            navErros.className = "text-slate-300 hover:text-white transition px-2 py-1";
-            navQuiz.className = "text-slate-300 hover:text-white transition px-2 py-1";
-
-            if (tab === 'menu') {
-                secMenu.classList.remove('hidden');
-                navMenu.className = "text-white font-bold text-senac-orange border-b-2 border-senac-orange px-2 py-1";
-                heroTitle.textContent = "Plataforma de Jogos Educacionais";
-                heroDesc.textContent = "Selecione uma das atividades abaixo para exercitar a atenção visual ou testar os conhecimentos sobre reposição de mercadorias.";
-            } else if (tab === 'erros') {
-                secErros.classList.remove('hidden');
-                errosBadge.classList.remove('hidden');
-                errosBadge.classList.add('flex');
-                navErros.className = "text-white font-bold text-senac-orange border-b-2 border-senac-orange px-2 py-1";
-                heroTitle.textContent = "Jogo dos 7 Erros - Supermercado";
-                heroDesc.textContent = "Atividade desenvolvida para exercitar a atenção seletiva, foco nos detalhes e discriminação visual em ambientes operacionais.";
+            if (view === 'home') {
+                vHome.classList.remove('hidden');
+            } else if (view === 'erros') {
+                vErros.classList.remove('hidden');
                 setTimeout(syncCanvasSize, 100);
-            } else if (tab === 'quiz') {
-                secQuiz.classList.remove('hidden');
-                navQuiz.className = "text-white font-bold text-senac-orange border-b-2 border-senac-orange px-2 py-1";
-                heroTitle.textContent = "Quiz das Gôndolas";
-                heroDesc.textContent = "Teste seus conhecimentos operacionais sobre gôndolas, método PEPS, precificação e reposição de produtos.";
+            } else if (view === 'quiz') {
+                vQuiz.classList.remove('hidden');
+            } else if (view === 'organize') {
+                vOrganize.classList.remove('hidden');
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
 
         // -------------------------------------------------------------
-        // DADOS E LÓGICA DO QUIZ DAS GÔNDOLAS (EXATAMENTE 8 PERGUNTAS)
+        // JOGO 2 - QUIZ DAS GÔNDOLAS (EXATAMENTE 8 PERGUNTAS)
         // -------------------------------------------------------------
         const quizData = [
             {
@@ -614,7 +755,7 @@
                     "C) Diminuir o espaço disponível",
                     "D) Misturar produtos diferentes"
                 ],
-                correct: 1 // B
+                correct: 1
             },
             {
                 question: "2. O que significa PEPS (Primeiro que Entra, Primeiro que Sai)?",
@@ -624,7 +765,7 @@
                     "C) Os produtos maiores devem ficar na frente",
                     "D) Os produtos promocionais devem ficar no fundo"
                 ],
-                correct: 1 // B
+                correct: 1
             },
             {
                 question: "3. Por que é importante verificar a validade dos produtos nas gôndolas?",
@@ -634,7 +775,7 @@
                     "C) Para aumentar o preço",
                     "D) Para ocupar mais espaço"
                 ],
-                correct: 1 // B
+                correct: 1
             },
             {
                 question: "4. Onde os produtos devem ficar para facilitar a compra pelo cliente?",
@@ -644,7 +785,7 @@
                     "C) Atrás de outros produtos",
                     "D) No estoque"
                 ],
-                correct: 1 // B
+                correct: 1
             },
             {
                 question: "5. O que deve ser feito quando um produto está faltando na gôndola?",
@@ -654,7 +795,7 @@
                     "C) Retirar todos os produtos da seção",
                     "D) Colocar outro produto no lugar sem identificação"
                 ],
-                correct: 1 // B
+                correct: 1
             },
             {
                 question: "6. Por que os produtos devem estar com as etiquetas de preço corretas?",
@@ -664,7 +805,7 @@
                     "C) Para esconder os produtos",
                     "D) Para dificultar a escolha"
                 ],
-                correct: 0 // A
+                correct: 0
             },
             {
                 question: "7. Qual atitude ajuda a manter uma gôndola organizada?",
@@ -674,7 +815,7 @@
                     "C) Misturar categorias",
                     "D) Colocar produtos no chão"
                 ],
-                correct: 1 // B
+                correct: 1
             },
             {
                 question: "8. Ao encontrar uma embalagem danificada na gôndola, o que deve ser feito?",
@@ -684,7 +825,7 @@
                     "C) Retirar da exposição e comunicar o responsável",
                     "D) Esconder atrás de outro produto"
                 ],
-                correct: 2 // C
+                correct: 2
             }
         ];
 
@@ -696,32 +837,27 @@
             quizAnswered = false;
             const currentQ = quizData[quizCurrentIndex];
 
-            // Atualizar contadores do topo
             document.getElementById('quiz-step-indicator').textContent = `Pergunta ${quizCurrentIndex + 1} de ${quizData.length}`;
             document.getElementById('quiz-live-score').textContent = quizScore;
             
-            // Atualizar barra de progresso
             const progressPercent = ((quizCurrentIndex + 1) / quizData.length) * 100;
             document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
 
-            // Definir pergunta
             document.getElementById('quiz-question-text').textContent = currentQ.question;
 
-            // Esconder feedback e desabilitar botão Próximo
             const feedbackBox = document.getElementById('quiz-feedback-box');
             feedbackBox.className = "hidden p-4 rounded-xl border text-sm font-semibold flex items-center gap-3";
             
             const btnNext = document.getElementById('btn-quiz-next');
             btnNext.disabled = true;
-            btnNext.className = "bg-slate-200 text-slate-400 font-bold px-6 py-3 rounded-xl transition cursor-not-allowed flex items-center gap-2";
+            btnNext.className = "bg-slate-200 text-slate-400 font-bold px-6 py-3.5 rounded-xl transition cursor-not-allowed flex items-center gap-2 w-full sm:w-auto justify-center";
 
-            // Renderizar Opções
             const container = document.getElementById('quiz-options-container');
             container.innerHTML = '';
 
             currentQ.options.forEach((optText, optIdx) => {
                 const btn = document.createElement('button');
-                btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 hover:border-senac-blue/50 text-slate-700 font-semibold text-sm sm:text-base transition duration-150 flex items-center justify-between shadow-sm cursor-pointer";
+                btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 hover:border-senac-blue text-slate-700 font-semibold text-sm sm:text-base transition duration-150 flex items-center justify-between shadow-sm cursor-pointer";
                 btn.innerHTML = `
                     <span>${optText}</span>
                     <i class="quiz-opt-icon fa-regular fa-circle text-slate-300 text-lg"></i>
@@ -745,25 +881,23 @@
                 document.getElementById('quiz-live-score').textContent = quizScore;
             }
 
-            // Desabilitar todas as alternativas e destacar respostas
             optButtons.forEach((btn, idx) => {
-                btn.classList.remove('hover:bg-slate-50', 'hover:border-senac-blue/50', 'cursor-pointer');
+                btn.classList.remove('hover:bg-slate-50', 'hover:border-senac-blue', 'cursor-pointer');
                 btn.classList.add('cursor-not-allowed');
 
                 const icon = btn.querySelector('.quiz-opt-icon');
 
                 if (idx === currentQ.correct) {
-                    btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold text-sm sm:text-base transition flex items-center justify-between shadow-sm";
+                    btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold text-sm sm:text-base transition flex items-center justify-between shadow-sm";
                     icon.className = "fa-solid fa-circle-check text-emerald-600 text-xl";
                 } else if (idx === selectedIdx && !isCorrect) {
-                    btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-900 font-bold text-sm sm:text-base transition flex items-center justify-between shadow-sm";
+                    btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-rose-500 bg-rose-50 text-rose-900 font-bold text-sm sm:text-base transition flex items-center justify-between shadow-sm";
                     icon.className = "fa-solid fa-circle-xmark text-rose-600 text-xl";
                 } else {
-                    btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-xl border-2 border-slate-100 bg-slate-50 text-slate-400 font-medium text-sm sm:text-base transition flex items-center justify-between opacity-60";
+                    btn.className = "quiz-opt-btn w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-slate-100 bg-slate-50 text-slate-400 font-medium text-sm sm:text-base transition flex items-center justify-between opacity-60";
                 }
             });
 
-            // Feedback visual em caixa
             const feedbackBox = document.getElementById('quiz-feedback-box');
             const feedbackIcon = document.getElementById('quiz-feedback-icon');
             const feedbackText = document.getElementById('quiz-feedback-text');
@@ -772,17 +906,16 @@
             if (isCorrect) {
                 feedbackBox.className = "p-4 rounded-xl border border-emerald-300 bg-emerald-100 text-emerald-900 text-sm font-bold flex items-center gap-3";
                 feedbackIcon.className = "fa-solid fa-circle-check text-emerald-600 text-xl";
-                feedbackText.textContent = "✅ Resposta correta!";
+                feedbackText.textContent = "✅ Correto!";
             } else {
                 feedbackBox.className = "p-4 rounded-xl border border-rose-300 bg-rose-100 text-rose-900 text-sm font-bold flex items-center gap-3";
                 feedbackIcon.className = "fa-solid fa-circle-xmark text-rose-600 text-xl";
-                feedbackText.textContent = `❌ Resposta incorreta! A resposta correta era: ${currentQ.options[currentQ.correct]}`;
+                feedbackText.textContent = `❌ Incorreto! Resposta correta: ${currentQ.options[currentQ.correct]}`;
             }
 
-            // Habilitar botão Próximo
             const btnNext = document.getElementById('btn-quiz-next');
             btnNext.disabled = false;
-            btnNext.className = "bg-senac-blue hover:bg-senac-navy text-white font-bold px-6 py-3 rounded-xl transition cursor-pointer flex items-center gap-2 shadow";
+            btnNext.className = "bg-senac-blue hover:bg-senac-navy text-white font-bold px-6 py-3.5 rounded-xl transition cursor-pointer flex items-center gap-2 shadow w-full sm:w-auto justify-center";
         }
 
         document.getElementById('btn-quiz-next').onclick = () => {
@@ -821,7 +954,7 @@
                 messageCard.textContent = "👍 Bom trabalho! Continue praticando!";
             } else {
                 messageCard.className = "bg-rose-50 border border-rose-200 p-4 rounded-xl text-rose-900 font-extrabold text-base max-w-lg mx-auto";
-                messageCard.textContent = "📚 Que tal tentar novamente?";
+                messageCard.textContent = "📚 Continue estudando e tente novamente!";
             }
         }
 
@@ -835,7 +968,181 @@
 
 
         // -------------------------------------------------------------
-        // DADOS E LÓGICA DO JOGO DOS 7 ERROS (INTEGRALMENTE PRESERVADO)
+        // JOGO 3 - ORGANIZE AS GÔNDOLAS (SIMULAÇÃO PRÁTICA INTERATIVA)
+        // -------------------------------------------------------------
+        const productsList = [
+            { id: 'p1', name: 'Leite', icon: '🥛', category: 'LATICÍNIOS' },
+            { id: 'p2', name: 'Biscoito', icon: '🍪', category: 'DOCES' },
+            { id: 'p3', name: 'Macarrão', icon: '🍝', category: 'MASSAS' },
+            { id: 'p4', name: 'Suco', icon: '🧃', category: 'BEBIDAS' },
+            { id: 'p5', name: 'Feijão', icon: '🥫', category: 'MERCEARIA' },
+            { id: 'p6', name: 'Sabão', icon: '🧼', category: 'LIMPEZA' },
+            { id: 'p7', name: 'Detergente', icon: '🧴', category: 'LIMPEZA' },
+            { id: 'p8', name: 'Chocolate', icon: '🍫', category: 'DOCES' }
+        ];
+
+        let selectedProduct = null;
+        let placedProductsCount = 0;
+        let organizeScore = 0;
+        let correctPlacements = 0;
+
+        function renderProductsPool() {
+            const pool = document.getElementById('products-pool');
+            pool.innerHTML = '';
+
+            productsList.forEach(prod => {
+                const isPlaced = document.getElementById(`placed-${prod.id}`);
+                
+                const card = document.createElement('div');
+                card.id = `prod-card-${prod.id}`;
+                card.draggable = !isPlaced;
+
+                if (isPlaced) {
+                    card.className = "p-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 flex items-center gap-3 opacity-50 cursor-not-allowed";
+                    card.innerHTML = `<span class="text-2xl">${prod.icon}</span><span class="text-xs font-bold">${prod.name} (Ok)</span>`;
+                } else {
+                    card.className = "p-3 rounded-xl border-2 border-slate-200 bg-white hover:border-senac-orange hover:shadow-md cursor-pointer flex items-center gap-3 transition transform active:scale-95";
+                    card.innerHTML = `<span class="text-2xl">${prod.icon}</span><span class="text-xs font-extrabold text-slate-700">${prod.name}</span>`;
+
+                    card.ondragstart = (e) => {
+                        e.dataTransfer.setData("text/plain", prod.id);
+                        selectProduct(prod);
+                    };
+
+                    card.onclick = () => selectProduct(prod);
+                }
+
+                pool.appendChild(card);
+            });
+        }
+
+        function selectProduct(prod) {
+            selectedProduct = prod;
+            document.querySelectorAll('#products-pool > div').forEach(el => el.classList.remove('item-selected'));
+            
+            const activeCard = document.getElementById(`prod-card-${prod.id}`);
+            if (activeCard) activeCard.classList.add('item-selected');
+
+            document.getElementById('selected-product-label').textContent = `Selecionado: ${prod.icon} ${prod.name}`;
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function dropProduct(e, targetCategory) {
+            e.preventDefault();
+            const prodId = e.dataTransfer.getData("text/plain");
+            const prod = productsList.find(p => p.id === prodId);
+            if (prod) {
+                processPlacement(prod, targetCategory);
+            }
+        }
+
+        function placeSelectedProduct(targetCategory) {
+            if (!selectedProduct) {
+                showShelfFeedback("Selecione primeiro um produto da caixa de reposição abaixo!", "amber");
+                return;
+            }
+            processPlacement(selectedProduct, targetCategory);
+        }
+
+        function processPlacement(prod, targetCategory) {
+            const isCorrect = (prod.category === targetCategory);
+
+            if (isCorrect) {
+                organizeScore += 10;
+                correctPlacements++;
+                placedProductsCount++;
+
+                showShelfFeedback(`✅ "Produto ${prod.name} colocado corretamente na gôndola de ${targetCategory}!" (+10 pts)`, "emerald");
+
+                const shelfZone = document.querySelector(`.shelf-zone[data-category="${targetCategory}"] .shelf-content`);
+                const placedBadge = document.createElement('div');
+                placedBadge.id = `placed-${prod.id}`;
+                placedBadge.className = "bg-slate-800 text-white text-xs px-2.5 py-1 rounded-lg border border-slate-600 flex items-center gap-1.5 shadow animate-pop";
+                placedBadge.innerHTML = `<span>${prod.icon}</span><span class="font-bold text-[11px]">${prod.name}</span>`;
+                shelfZone.appendChild(placedBadge);
+
+                selectedProduct = null;
+                document.getElementById('selected-product-label').textContent = "";
+                renderProductsPool();
+
+            } else {
+                organizeScore = Math.max(0, organizeScore - 5);
+                showShelfFeedback(`❌ "Esse produto (${prod.name}) pertence a outra seção." (-5 pts)`, "rose");
+            }
+
+            document.getElementById('shelf-score-display').textContent = organizeScore;
+            document.getElementById('shelf-count-placed').textContent = `${placedProductsCount} / ${productsList.length} Colocados`;
+
+            if (placedProductsCount === productsList.length) {
+                setTimeout(showOrganizeResults, 600);
+            }
+        }
+
+        function showShelfFeedback(msg, type) {
+            const feedbackEl = document.getElementById('shelf-feedback');
+            feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'border-emerald-300', 'text-emerald-900', 'bg-rose-100', 'border-rose-300', 'text-rose-900', 'bg-amber-100', 'border-amber-300', 'text-amber-900');
+            
+            if (type === 'emerald') {
+                feedbackEl.classList.add('bg-emerald-100', 'border-emerald-300', 'text-emerald-900');
+            } else if (type === 'rose') {
+                feedbackEl.classList.add('bg-rose-100', 'border-rose-300', 'text-rose-900');
+            } else {
+                feedbackEl.classList.add('bg-amber-100', 'border-amber-300', 'text-amber-900');
+            }
+
+            feedbackEl.textContent = msg;
+        }
+
+        function showOrganizeResults() {
+            const resultCard = document.getElementById('organize-card-result');
+            resultCard.classList.remove('hidden');
+
+            const total = productsList.length;
+            const percentage = (correctPlacements / total) * 100;
+
+            document.getElementById('organize-score-text').textContent = `Você conseguiu organizar ${correctPlacements} de ${total} produtos corretamente. Pontuação total: ${organizeScore} pontos.`;
+
+            const badge = document.getElementById('organize-eval-badge');
+
+            if (percentage >= 90) {
+                badge.className = "inline-block bg-emerald-100 text-emerald-900 border border-emerald-200 px-4 py-1.5 rounded-lg text-sm font-extrabold mt-3";
+                badge.textContent = "🏆 Excelente organização!";
+            } else if (percentage >= 70) {
+                badge.className = "inline-block bg-blue-100 text-blue-900 border border-blue-200 px-4 py-1.5 rounded-lg text-sm font-extrabold mt-3";
+                badge.textContent = "👏 Muito bom!";
+            } else if (percentage >= 50) {
+                badge.className = "inline-block bg-amber-100 text-amber-900 border border-amber-200 px-4 py-1.5 rounded-lg text-sm font-extrabold mt-3";
+                badge.textContent = "👍 Está indo bem!";
+            } else {
+                badge.className = "inline-block bg-rose-100 text-rose-900 border border-rose-200 px-4 py-1.5 rounded-lg text-sm font-extrabold mt-3";
+                badge.textContent = "📚 Continue praticando!";
+            }
+
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetOrganizeGame() {
+            selectedProduct = null;
+            placedProductsCount = 0;
+            organizeScore = 0;
+            correctPlacements = 0;
+
+            document.getElementById('shelf-score-display').textContent = "0";
+            document.getElementById('shelf-count-placed').textContent = `0 / ${productsList.length} Colocados`;
+            document.getElementById('selected-product-label').textContent = "";
+            document.getElementById('shelf-feedback').classList.add('hidden');
+            document.getElementById('organize-card-result').classList.add('hidden');
+
+            document.querySelectorAll('.shelf-content').forEach(c => c.innerHTML = '');
+            renderProductsPool();
+        }
+
+
+        // -------------------------------------------------------------
+        // JOGO 1 - JOGO DOS 7 ERROS (LÓGICA PRESERVADA)
         // -------------------------------------------------------------
         const errorsList = [
             { id: 1, text: "Placa Superior do teto (Texto e cor alterados)", hint: "Olha para a placa azul suspensa no teto do lado direito.", bbox: { minX: 0.68, maxX: 0.82, minY: 0.08, maxY: 0.25 } },
@@ -1044,7 +1351,7 @@
             errorsList.forEach((error) => {
                 const isChecked = checkedErrors.has(error.id);
                 const item = document.createElement('div');
-                item.className = `p-3 rounded-xl border transition cursor-pointer flex items-start gap-3 ${
+                item.className = `p-3.5 rounded-2xl border transition cursor-pointer flex items-start gap-3 ${
                     isChecked ? 'bg-emerald-50/80 border-emerald-300 text-slate-800 font-medium shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }`;
 
@@ -1106,12 +1413,13 @@
             victoryModal.classList.add('hidden');
         });
 
-        // INICIALIZAÇÃO DA PÁGINA
+        // INICIALIZAÇÃO DA PLATAFORMA
         window.addEventListener('load', () => {
             syncCanvasSize();
             renderChecklist();
             loadQuizQuestion();
-            switchTab('menu'); // Inicia no Menu Principal
+            renderProductsPool();
+            navigateTo('home'); // Sempre abre primeiro na PÁGINA INICIAL (HOME)
         });
     </script>
 </body>
